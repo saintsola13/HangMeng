@@ -216,10 +216,13 @@
     }
     function startAsHost(){if(!window._hostWord)return;currentWord=window._hostWord;currentHint=window._hostHint||"Custom";startGame()}
     function joinGame(){
-      const code=document.getElementById("join-code").value.trim();
+      let code=document.getElementById("join-code").value
+        .trim()
+        .replace(/[\u200B-\u200D\uFEFF]/g,"")
+        .replace(/\s+/g,"");
       if(!code){alert("Paste a code first");return}
       const data=decodeCode(code);
-      if(!data){alert("Invalid code");return}
+      if(!data){alert("Invalid code — check for extra spaces or weird characters");return}
       currentWord=data.word;currentHint=data.hint||"Friend's word";startGame();
     }
     showMain();
