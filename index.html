@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>HangMeng</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:system-ui,-apple-system,sans-serif;
+      background:#0a0a12;
+      color:#fff;
+      min-height:100vh;
+      background:linear-gradient(180deg,#003322 0%,#1a0033 40%,#0a0015 100%);
+      overflow-x:hidden;
+    }
+    #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;position:relative;z-index:1}
+    .screen{display:none;width:100%;flex-direction:column;align-items:center;animation:fadeIn .3s ease}
+    .screen.active{display:flex}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    h1.title{font-size:2.6rem;font-weight:900;background:linear-gradient(135deg,#00ff66,#00e5ff,#ff00aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:18px 0 6px;text-align:center}
+    .subtitle{color:rgba(255,255,255,.65);font-size:.9rem;margin-bottom:22px;text-align:center}
+    .btn{display:block;width:100%;max-width:300px;padding:15px;margin:7px 0;border:none;border-radius:14px;font-size:1.05rem;font-weight:700;cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg,#00c853,#00e676);color:#003300}
+    .btn-pink{background:linear-gradient(135deg,#ff0080,#ff4da6);color:#fff}
+    .btn-blue{background:linear-gradient(135deg,#00b0ff,#00e5ff);color:#003344}
+    .btn-secondary{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+    .category-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:320px;margin:10px 0 20px}
+    .cat-btn{padding:16px 10px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.35);color:#fff;font-weight:700;font-size:.95rem}
+    .hangman-area{width:100%;max-width:260px;height:200px;margin:8px 0 12px}
+    .hangman-svg{width:100%;height:100%}
+    .word-display{font-size:1.6rem;letter-spacing:6px;font-weight:700;margin:10px 0;color:#00ff66;min-height:40px;text-align:center}
+    .hint{font-size:.85rem;color:rgba(255,255,255,.55);margin-bottom:8px}
+    .lives{font-size:.95rem;color:#ff6b9d;margin-bottom:12px;font-weight:600}
+    .keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;width:100%;max-width:340px}
+    .key{aspect-ratio:1;border:none;border-radius:9px;background:rgba(255,255,255,.12);color:#fff;font-weight:700;font-size:.95rem}
+    .key.correct{background:#00c853;color:#003300}
+    .key.wrong{background:#ff1744;opacity:.55}
+    .input-group{width:100%;max-width:300px;margin:10px 0}
+    .input-group label{display:block;font-size:.8rem;color:rgba(255,255,255,.6);margin-bottom:5px}
+    input[type=text]{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.4);color:#fff;font-size:1.05rem;outline:none}
+    .code-box{background:rgba(0,0,0,.5);border:2px dashed #00ff66;border-radius:12px;padding:14px;font-family:monospace;font-size:1.15rem;color:#00ff66;text-align:center;margin:12px 0;width:100%;max-width:300px;word-break:break-all}
+    .back-btn{margin-top:20px;background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);padding:11px 24px;border-radius:30px;font-size:.9rem}
+    .result-msg{font-size:1.7rem;font-weight:800;margin:18px 0 6px;text-align:center}
+    .result-msg.win{color:#00ff66}
+    .result-msg.lose{color:#ff4d6d}
+    .reveal{font-size:1.1rem;color:rgba(255,255,255,.8);margin-bottom:20px;text-align:center}
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#00c853;color:#003300;padding:11px 22px;border-radius:30px;font-weight:700;z-index:99;transition:.3s}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="screen-main" class="screen active">
+      <h1 class="title">HangMeng</h1>
+      <p class="subtitle">Guess the word before the man drops</p>
+      <button class="btn btn-primary" onclick="showCategories()">Play Solo</button>
+      <button class="btn btn-pink" onclick="showTwoPlayer()">Two Player</button>
+    </div>
+
+    <div id="screen-cats" class="screen">
+      <h1 class="title" style="font-size:1.9rem">Pick Category</h1>
+      <div class="category-grid" id="cat-grid"></div>
+      <button class="back-btn" onclick="showMain()">← Back</button>
+    </div>
+
+    <div id="screen-game" class="screen">
+      <div class="hangman-area">
+        <svg class="hangman-svg" viewBox="0 0 200 240" id="hangman-svg">
+          <line x1="40" y1="220" x2="160" y2="220" stroke="#888" stroke-width="5"/>
+          <line x1="60" y1="220" x2="60" y2="30" stroke="#888" stroke-width="5"/>
+          <line x1="60" y1="30" x2="130" y2="30" stroke="#888" stroke-width="5"/>
+          <line x1="130" y1="30" x2="130" y2="55" stroke="#888" stroke-width="3"/>
+          <circle id="part-head" cx="130" cy="75" r="18" fill="none" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="part-body" x1="130" y1="93" x2="130" y2="145" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="part-larm" x1="130" y1="108" x2="102" y2="135" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="part-rarm" x1="130" y1="108" x2="158" y2="135" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="part-lleg" x1="130" y1="145" x2="108" y2="185" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="part-rleg" x1="130" y1="145" x2="152" y2="185" stroke="#00ff66" stroke-width="3" style="display:none"/>
+        </svg>
+      </div>
+      <div class="word-display" id="word-display"></div>
+      <div class="hint" id="hint-text"></div>
+      <div class="lives" id="lives-text">Lives: 6</div>
+      <div class="keyboard" id="keyboard"></div>
+      <button class="back-btn" onclick="if(confirm('Quit?'))showMain()">Quit</button>
+    </div>
+
+    <div id="screen-2p" class="screen">
+      <h1 class="title" style="font-size:1.9rem">Two Player</h1>
+      <p class="subtitle">Share an invite code with a friend</p>
+      <button class="btn btn-blue" onclick="showCreate()">Create Game</button>
+      <button class="btn btn-secondary" onclick="showJoin()">Join with Code</button>
+      <button class="back-btn" onclick="showMain()">← Back</button>
+    </div>
+
+    <div id="screen-create" class="screen">
+      <h1 class="title" style="font-size:1.7rem">Create Game</h1>
+      <p class="subtitle">Enter a secret word</p>
+      <div class="input-group">
+        <label>Secret Word</label>
+        <input type="text" id="secret-word" placeholder="e.g. PHOENIX" maxlength="18" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label>Hint (optional)</label>
+        <input type="text" id="secret-hint" placeholder="e.g. City" maxlength="30">
+      </div>
+      <button class="btn btn-primary" onclick="generateCode()">Generate Invite Code</button>
+      <div id="code-section" style="display:none;width:100%;flex-direction:column;align-items:center">
+        <div class="code-box" id="invite-code"></div>
+        <button class="btn btn-pink" onclick="copyCode()">📋 Copy Code</button>
+        <button class="btn btn-secondary" style="margin-top:10px" onclick="startAsHost()">Play on this phone</button>
+      </div>
+      <button class="back-btn" onclick="showTwoPlayer()">← Back</button>
+    </div>
+
+    <div id="screen-join" class="screen">
+      <h1 class="title" style="font-size:1.7rem">Join Game</h1>
+      <p class="subtitle">Paste the invite code</p>
+      <div class="input-group">
+        <label>Invite Code</label>
+        <input type="text" id="join-code" placeholder="Paste code here" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" onclick="joinGame()">Start Guessing</button>
+      <button class="back-btn" onclick="showTwoPlayer()">← Back</button>
+    </div>
+
+    <div id="screen-result" class="screen">
+      <div class="result-msg" id="result-msg"></div>
+      <div class="reveal" id="result-reveal"></div>
+      <button class="btn btn-primary" onclick="showMain()">Play Again</button>
+      <button class="btn btn-secondary" onclick="showCategories()">New Category</button>
+    </div>
+  </div>
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    const WORDS={
+      Animals:["ELEPHANT","GIRAFFE","KANGAROO","PENGUIN","DOLPHIN","CHEETAH","PANDA","ZEBRA","OCTOPUS","RHINOCEROS","SQUIRREL","FLAMINGO","CROCODILE","HAMSTER","KOALA"],
+      Movies:["INCEPTION","MATRIX","AVATAR","TITANIC","GLADIATOR","INTERSTELLAR","JOKER","FROZEN","DUNE","BATMAN","ALIEN","JAWS","SCREAM","CASABLANCA","PARASITE"],
+      Food:["PIZZA","SUSHI","TACO","BURGER","PASTA","WAFFLE","RAMEN","BURRITO","PANCAKE","STEAK","SALAD","DONUT","CURRY","LASAGNA","CROISSANT"],
+      Sports:["SOCCER","BASKETBALL","TENNIS","BASEBALL","HOCKEY","VOLLEYBALL","CRICKET","GOLF","SURFING","BOXING","RUGBY","SKATEBOARD","SWIMMING","CYCLING","WRESTLING"],
+      Tech:["JAVASCRIPT","PYTHON","GITHUB","ANDROID","CRYPTO","ROBOT","SERVER","PIXEL","QUANTUM","NEURAL","BLOCKCHAIN","LAPTOP","ROUTER","DATABASE","ALGORITHM"],
+      Nature:["VOLCANO","GLACIER","CANYON","WATERFALL","FOREST","DESERT","OCEAN","MOUNTAIN","THUNDER","RAINBOW","AURORA","CAVERN","ISLAND","RIVER","MEADOW"]
+    };
+    const PARTS=["part-head","part-body","part-larm","part-rarm","part-lleg","part-rleg"];
+    let currentWord="",guessed=new Set(),wrongs=0,maxWrongs=6,currentHint="";
+
+    function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active")}
+    function showMain(){showScreen("screen-main")}
+    function showCategories(){
+      const grid=document.getElementById("cat-grid");grid.innerHTML="";
+      Object.keys(WORDS).forEach(cat=>{
+        const b=document.createElement("button");b.className="cat-btn";b.textContent=cat;b.onclick=()=>startSolo(cat);grid.appendChild(b);
+      });
+      const r=document.createElement("button");r.className="cat-btn";r.textContent="🎲 Random";r.style.gridColumn="1/-1";
+      r.onclick=()=>{const c=Object.keys(WORDS);startSolo(c[Math.floor(Math.random()*c.length)])};grid.appendChild(r);
+      showScreen("screen-cats");
+    }
+    function showTwoPlayer(){showScreen("screen-2p")}
+    function showCreate(){document.getElementById("secret-word").value="";document.getElementById("secret-hint").value="";document.getElementById("code-section").style.display="none";showScreen("screen-create")}
+    function showJoin(){document.getElementById("join-code").value="";showScreen("screen-join")}
+
+    function startSolo(cat){const list=WORDS[cat];currentWord=list[Math.floor(Math.random()*list.length)];currentHint=cat;startGame()}
+    function startGame(){
+      guessed=new Set();wrongs=0;
+      PARTS.forEach(id=>document.getElementById(id).style.display="none");
+      updateWordDisplay();
+      document.getElementById("hint-text").textContent=currentHint?"Category: "+currentHint:"";
+      document.getElementById("lives-text").textContent="Lives: 6";
+      buildKeyboard();showScreen("screen-game");
+    }
+    function updateWordDisplay(){
+      let d="";for(let ch of currentWord)d+=(ch===" "?"  ":(guessed.has(ch)?ch:"_")+" ");
+      document.getElementById("word-display").textContent=d.trim();
+    }
+    function buildKeyboard(){
+      const kb=document.getElementById("keyboard");kb.innerHTML="";
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l=>{
+        const b=document.createElement("button");b.className="key";b.textContent=l;b.onclick=()=>guess(l,b);kb.appendChild(b);
+      });
+    }
+    function guess(letter,btn){
+      if(guessed.has(letter))return;guessed.add(letter);btn.disabled=true;
+      if(currentWord.includes(letter)){btn.classList.add("correct");updateWordDisplay();
+        if([...currentWord].every(ch=>ch===" "||guessed.has(ch)))endGame(true);
+      }else{btn.classList.add("wrong");wrongs++;
+        if(wrongs<=PARTS.length)document.getElementById(PARTS[wrongs-1]).style.display="block";
+        document.getElementById("lives-text").textContent="Lives: "+(maxWrongs-wrongs);
+        if(wrongs>=maxWrongs)endGame(false);
+      }
+    }
+    function endGame(won){
+      const msg=document.getElementById("result-msg"),rev=document.getElementById("result-reveal");
+      if(won){msg.textContent="YOU WIN! 🔥";msg.className="result-msg win";rev.textContent="Word was: "+currentWord}
+      else{msg.textContent="GAME OVER";msg.className="result-msg lose";rev.textContent="The word was: "+currentWord}
+      showScreen("screen-result");
+    }
+
+    function encodeWord(w,h){return btoa(unescape(encodeURIComponent(w.toUpperCase().trim()+"|"+(h||"")))).replace(/=+$/,"")}
+    function decodeCode(c){try{let p=c;while(p.length%4)p+="=";const d=decodeURIComponent(escape(atob(p)));const[w,h]=d.split("|");return w&&w.length>1?{word:w.toUpperCase(),hint:h||""}:null}catch(e){return null}}
+    function generateCode(){
+      const w=document.getElementById("secret-word").value.trim().toUpperCase();
+      if(w.length<2){alert("Need at least 2 letters");return}
+      if(!/^[A-Z ]+$/.test(w)){alert("Only letters & spaces");return}
+      const h=document.getElementById("secret-hint").value.trim();
+      document.getElementById("invite-code").textContent=encodeWord(w,h);
+      document.getElementById("code-section").style.display="flex";
+      window._hostWord=w;window._hostHint=h;
+    }
+    function copyCode(){
+      const code=document.getElementById("invite-code").textContent;
+      navigator.clipboard.writeText(code).then(()=>{const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)})
+      .catch(()=>{const ta=document.createElement("textarea");ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
+        const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)});
+    }
+    function startAsHost(){if(!window._hostWord)return;currentWord=window._hostWord;currentHint=window._hostHint||"Custom";startGame()}
+    function joinGame(){
+      const code=document.getElementById("join-code").value.trim();
+      if(!code){alert("Paste a code first");return}
+      const data=decodeCode(code);
+      if(!data){alert("Invalid code");return}
+      currentWord=data.word;currentHint=data.hint||"Friend's word";startGame();
+    }
+    showMain();
+  </script>
+</body>
+</html>
