@@ -136,13 +136,130 @@
 
   <script>
     const WORDS={
-      Animals:["ELEPHANT","GIRAFFE","KANGAROO","PENGUIN","DOLPHIN","CHEETAH","PANDA","ZEBRA","OCTOPUS","RHINOCEROS","SQUIRREL","FLAMINGO","CROCODILE","HAMSTER","KOALA"],
-      Movies:["INCEPTION","MATRIX","AVATAR","TITANIC","GLADIATOR","INTERSTELLAR","JOKER","FROZEN","DUNE","BATMAN","ALIEN","JAWS","SCREAM","CASABLANCA","PARASITE"],
-      Food:["PIZZA","SUSHI","TACO","BURGER","PASTA","WAFFLE","RAMEN","BURRITO","PANCAKE","STEAK","SALAD","DONUT","CURRY","LASAGNA","CROISSANT"],
-      Sports:["SOCCER","BASKETBALL","TENNIS","BASEBALL","HOCKEY","VOLLEYBALL","CRICKET","GOLF","SURFING","BOXING","RUGBY","SKATEBOARD","SWIMMING","CYCLING","WRESTLING"],
-      Tech:["JAVASCRIPT","PYTHON","GITHUB","ANDROID","CRYPTO","ROBOT","SERVER","PIXEL","QUANTUM","NEURAL","BLOCKCHAIN","LAPTOP","ROUTER","DATABASE","ALGORITHM"],
-      Nature:["VOLCANO","GLACIER","CANYON","WATERFALL","FOREST","DESERT","OCEAN","MOUNTAIN","THUNDER","RAINBOW","AURORA","CAVERN","ISLAND","RIVER","MEADOW"],
-      Anime:["NARUTO","GOKU","LUFFY","SAITAMA","EREN","TANJIRO","LEVI","GOJO","KILLUA","PICCOLO","VEGETA","ICHIGO","LIGHT","SPIKE","ASUNA","MIKASA","ZORO","SASUKE","DEKU","SHINJI"]
+      Animals:[
+        {w:"AXOLOTL",h:"Smiling amphibian that never fully grows up"},
+        {w:"PANGOLIN",h:"Only mammal covered in scales"},
+        {w:"QUOKKA",h:"Happiest animal on Earth, lives on an Australian island"},
+        {w:"NARWHAL",h:"The unicorn of the sea"},
+        {w:"CAPYBARA",h:"World's largest rodent, weirdly chill"},
+        {w:"WOLVERINE",h:"Not the Marvel one — ferocious mustelid"},
+        {w:"TAPIR",h:"Odd-toed ungulate with a prehensile snout"},
+        {w:"OKAPI",h:"Looks like a zebra-giraffe hybrid, it's neither"},
+        {w:"PLATYPUS",h:"Venomous, lays eggs, has a duck bill — pick a lane"},
+        {w:"MANATEE",h:"Sailors mistook these for mermaids. Sailors were lonely."},
+        {w:"WOMBAT",h:"Produces cube-shaped droppings"},
+        {w:"FOSSA",h:"Madagascar's apex predator, looks like a cat-dog hybrid"},
+        {w:"BINTURONG",h:"Smells like buttered popcorn, lives in trees"},
+        {w:"KINKAJOU",h:"Honey bear of the rainforest canopy"},
+        {w:"AARDVARK",h:"Always first in the dictionary, always last to be seen"}
+      ],
+      Movies:[
+        {w:"MULHOLLAND",h:"Lynch. Two women. Hollywood illusions shatter."},
+        {w:"SYNECDOCHE",h:"Kaufman builds a life-sized replica of New York inside a warehouse"},
+        {w:"CHINATOWN",h:"Forget it Jake"},
+        {w:"STALKER",h:"Tarkovsky. Three men seek a room that grants wishes."},
+        {w:"OLDBOY",h:"Korean revenge. The twist will ruin you."},
+        {w:"HEREDITARY",h:"Grief as horror. The attic. The telephone pole."},
+        {w:"MIDSOMMAR",h:"Breakup trip to Sweden goes extremely wrong in broad daylight"},
+        {w:"ANNIHILATION",h:"The shimmer. What it does to DNA."},
+        {w:"PRISONERS",h:"Two missing girls. Hugh Jackman with a hammer."},
+        {w:"IRREVERSIBLE",h:"Gaspar Noe. Time destroys everything. Watch order matters."},
+        {w:"MOONLIGHT",h:"Three chapters. One man. Who is you."},
+        {w:"PARASITE",h:"The stone. The basement. The smell."},
+        {w:"MELANCHOLIA",h:"Von Trier ends the world with a wedding"},
+        {w:"VIDEODROME",h:"Long live the new flesh"},
+        {w:"REPULSION",h:"Polanski. Alone in an apartment. Reality dissolves."}
+      ],
+      Food:[
+        {w:"BAKLAVA",h:"Layered pastry soaked in syrup, honey, nuts"},
+        {w:"KHACHAPURI",h:"Georgian cheese boat with an egg in it"},
+        {w:"CHIMICHANGA",h:"Deep fried burrito, Tex-Mex accident of legend"},
+        {w:"BIBIMBAP",h:"Korean rice bowl, mix it all together"},
+        {w:"GOCHUJANG",h:"Fermented Korean chili paste, funky and deep"},
+        {w:"POUTINE",h:"Fries, cheese curds, gravy. Canada's gift."},
+        {w:"INJERA",h:"Ethiopian sourdough flatbread that doubles as the plate"},
+        {w:"CEVICHE",h:"Raw fish cooked by citrus, no heat required"},
+        {w:"MOFONGO",h:"Fried plantain mashed with garlic, Puerto Rican staple"},
+        {w:"JOLLOF",h:"West African rice dish with a whole culture war attached"},
+        {w:"TIRAMISU",h:"Italian dessert. Coffee soaked. Means pick me up."},
+        {w:"STROOPWAFEL",h:"Dutch caramel syrup waffle sandwich"},
+        {w:"SHAKSHUKA",h:"Eggs poached in spiced tomato sauce"},
+        {w:"TAGINE",h:"Moroccan slow-cook in a conical clay pot"},
+        {w:"HORCHATA",h:"Creamy rice water drink, Mexico or Spain depending on who you ask"}
+      ],
+      Sports:[
+        {w:"PENTATHLON",h:"Five events: fencing, swimming, riding, shooting, running"},
+        {w:"BIATHLON",h:"Cross country skiing then stop and shoot a rifle"},
+        {w:"SEPAKTAKRAW",h:"Southeast Asian sport: volleyball but you can't use your hands"},
+        {w:"PELOTA",h:"Basque sport, fastest ball game on earth"},
+        {w:"CAPOEIRA",h:"Brazilian martial art disguised as a dance"},
+        {w:"SUMO",h:"Force your opponent out of the ring or down to the ground"},
+        {w:"LACROSSE",h:"Oldest sport in North America, Indigenous origin"},
+        {w:"SKELETON",h:"You go head-first down an icy track on a tiny sled"},
+        {w:"KABBADI",h:"Tag meets wrestling, one breath, South Asian"},
+        {w:"HURLING",h:"Irish sport, fastest field game in the world"},
+        {w:"BOBSLED",h:"Cool Runnings. Four people in a pod down ice."},
+        {w:"DECATHLON",h:"Ten track and field events across two days"},
+        {w:"POLO",h:"Horse. Mallet. Ball. Old money."},
+        {w:"FENCING",h:"Sword fighting in a white mask, scored electronically"},
+        {w:"SQUASH",h:"Not the vegetable. Racket sport inside four walls."}
+      ],
+      Tech:[
+        {w:"RECURSION",h:"See: recursion"},
+        {w:"IDEMPOTENT",h:"Do it once or a hundred times, same result"},
+        {w:"POLYMORPHISM",h:"Same interface, different behavior underneath"},
+        {w:"DEADLOCK",h:"Two threads waiting on each other forever"},
+        {w:"HEXADECIMAL",h:"Base 16. 0-9 then A-F."},
+        {w:"KUBERNETES",h:"Container orchestration. Greek for helmsman."},
+        {w:"MEMOIZATION",h:"Cache the result so you never solve it twice"},
+        {w:"ENDIANNESS",h:"Big or little? Which byte goes first?"},
+        {w:"SHARDING",h:"Split the database horizontally across machines"},
+        {w:"WEBHOOK",h:"Don't call us, we'll call you — HTTP edition"},
+        {w:"THROUGHPUT",h:"How much work gets done per unit of time"},
+        {w:"OBFUSCATION",h:"Making code deliberately hard to read"},
+        {w:"MONOREPO",h:"All your projects in one giant repository"},
+        {w:"EIGENVECTOR",h:"Google's PageRank is basically this"},
+        {w:"CRYPTOGRAPHY",h:"Math that keeps secrets"}
+      ],
+      Nature:[
+        {w:"SOLFATARA",h:"Volcanic crater that vents sulfurous gas but doesn't erupt"},
+        {w:"PERIGEE",h:"Moon's closest point to Earth — when it looks huge"},
+        {w:"FJORD",h:"Glacier-carved inlet between cliffs, very Norwegian"},
+        {w:"SINKHOLE",h:"Ground collapses suddenly into an underground void"},
+        {w:"PERMAFROST",h:"Ground that stays frozen year-round, melting fast"},
+        {w:"SUPERNOVA",h:"A star explodes and briefly outshines a galaxy"},
+        {w:"BIOLUMINESCENCE",h:"Living things that glow in the dark"},
+        {w:"MAELSTROM",h:"Powerful whirlpool in the sea"},
+        {w:"SOLSTICE",h:"Longest or shortest day of the year"},
+        {w:"AQUIFER",h:"Underground layer of rock that holds water"},
+        {w:"TECTONIC",h:"The plates that move continents over millions of years"},
+        {w:"PARALLAX",h:"How stars seem to shift position as Earth orbits"},
+        {w:"EROSION",h:"Wind and water slowly eating rock away"},
+        {w:"ESTUARY",h:"Where the river meets the sea"},
+        {w:"THERMOCLINE",h:"Sharp temperature boundary layer in the ocean"}
+      ],
+      Anime:[
+        {w:"SHINIGAMI",h:"Death god. Soul Society knows."},
+        {w:"NAKAMA",h:"More than friends. The word a certain pirate lives by."},
+        {w:"MANGEKYO",h:"Awakened through trauma. Itachi had it."},
+        {w:"SUSANOO",h:"Colossal warrior manifested from chakra and grief"},
+        {w:"ALCHEMY",h:"Equivalent exchange. Two brothers paid the price."},
+        {w:"BANKAI",h:"Final release. Takes years to achieve."},
+        {w:"AKATSUKI",h:"Red clouds. S-rank criminals. The organization."},
+        {w:"KAIJUU",h:"Category: giant monsters that stomp cities"},
+        {w:"SCOUTING",h:"The regiment that flies beyond the walls"},
+        {w:"QUIRK",h:"What they call superpowers in UA High"},
+        {w:"HOMUNCULUS",h:"Artificial human born from a flask in Amestris"},
+        {w:"RUMBLING",h:"When millions of Colossal Titans start walking"},
+        {w:"NEN",h:"Life energy that only some can learn to control"},
+        {w:"SHARINGAN",h:"Copy wheel eye. Red. Three tomoe."},
+        {w:"MUGEN",h:"Infinity. Also a samurai with no style and all style."},
+        {w:"EVANGELION",h:"Not a robot. Not a mech. Your mother is inside."},
+        {w:"PHANTOM",h:"The troupe. Chrollo leads. Hisoka left."},
+        {w:"RENGOKU",h:"Flame pillar. Akaza couldn't break him."},
+        {w:"KAMADO",h:"The surname carried through fire and demons"},
+        {w:"GIORNO",h:"Gangster's son with a dream. Gold Experience."}
+      ]
     };
     const PARTS=["part-head","part-body","part-larm","part-rarm","part-lleg","part-rleg"];
     let currentWord="",guessed=new Set(),wrongs=0,maxWrongs=6,currentHint="";
@@ -155,19 +272,19 @@
         const b=document.createElement("button");b.className="cat-btn";b.textContent=cat;b.onclick=()=>startSolo(cat);grid.appendChild(b);
       });
       const r=document.createElement("button");r.className="cat-btn";r.textContent="🎲 Random";r.style.gridColumn="1/-1";
-      r.onclick=()=>{const c=Object.keys(WORDS);startSolo(c[Math.floor(Math.random()*c.length)])};grid.appendChild(r);
+      r.onclick=()=>{const cats=Object.keys(WORDS);startSolo(cats[Math.floor(Math.random()*cats.length)])};grid.appendChild(r);
       showScreen("screen-cats");
     }
     function showTwoPlayer(){showScreen("screen-2p")}
     function showCreate(){document.getElementById("secret-word").value="";document.getElementById("secret-hint").value="";document.getElementById("code-section").style.display="none";showScreen("screen-create")}
     function showJoin(){document.getElementById("join-code").value="";showScreen("screen-join")}
 
-    function startSolo(cat){const list=WORDS[cat];currentWord=list[Math.floor(Math.random()*list.length)];currentHint=cat;startGame()}
+    function startSolo(cat){const list=WORDS[cat];const pick=list[Math.floor(Math.random()*list.length)];currentWord=pick.w;currentHint=pick.h;startGame()}
     function startGame(){
       guessed=new Set();wrongs=0;
       PARTS.forEach(id=>document.getElementById(id).style.display="none");
       updateWordDisplay();
-      document.getElementById("hint-text").textContent=currentHint?"Category: "+currentHint:"";
+      document.getElementById("hint-text").textContent=currentHint?"Hint: "+currentHint:"";
       document.getElementById("lives-text").textContent="Lives: 6";
       buildKeyboard();showScreen("screen-game");
     }
