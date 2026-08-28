@@ -11,9 +11,17 @@
       background:#0a0a12;
       color:#fff;
       min-height:100vh;
-      background:linear-gradient(180deg,#003322 0%,#1a0033 40%,#0a0015 100%);
+      background:url('bg.jpg') center center/cover no-repeat fixed;
       overflow-x:hidden;
     }
+    body::before{
+      content:'';
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      z-index:0;
+    }
+    #app{position:relative;z-index:1}
     #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;position:relative;z-index:1}
     .screen{display:none;width:100%;flex-direction:column;align-items:center;animation:fadeIn .3s ease}
     .screen.active{display:flex}
@@ -41,12 +49,40 @@
     input[type=text]{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.4);color:#fff;font-size:1.05rem;outline:none}
     .code-box{background:rgba(0,0,0,.5);border:2px dashed #00ff66;border-radius:12px;padding:14px;font-family:monospace;font-size:1.15rem;color:#00ff66;text-align:center;margin:12px 0;width:100%;max-width:300px;word-break:break-all}
     .back-btn{margin-top:20px;background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);padding:11px 24px;border-radius:30px;font-size:.9rem}
-    .result-msg{font-size:1.7rem;font-weight:800;margin:18px 0 6px;text-align:center}
-    .result-msg.win{color:#00ff66}
-    .result-msg.lose{color:#ff4d6d}
+    .result-msg{font-size:2rem;font-weight:900;margin:18px 0 6px;text-align:center}
+    .result-msg.win{color:#00ff66;text-shadow:0 0 30px #00ff66,0 0 60px #00ff66}
+    .result-msg.lose{color:#ff4d6d;text-shadow:0 0 30px #ff4d6d,0 0 60px #ff4d6d}
     .reveal{font-size:1.1rem;color:rgba(255,255,255,.8);margin-bottom:20px;text-align:center}
+    .confetti-container{position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden}
+    .confetti-piece{position:absolute;width:10px;height:10px;opacity:0;animation:confettiFall linear forwards}
+    @keyframes confettiFall{
+      0%{opacity:1;transform:translateY(-20px) rotate(0deg)}
+      100%{opacity:0;transform:translateY(110vh) rotate(720deg)}
+    }
+    .skull{font-size:5rem;animation:skullShake .5s ease infinite alternate;display:block;text-align:center;margin:10px 0}
+    @keyframes skullShake{from{transform:rotate(-8deg) scale(1)}to{transform:rotate(8deg) scale(1.1)}}
+    .lose-text{font-size:.95rem;color:rgba(255,100,100,.8);text-align:center;margin-bottom:4px}
+    .trophy{font-size:5rem;animation:trophyBounce .6s ease infinite alternate;display:block;text-align:center;margin:10px 0}
+    @keyframes trophyBounce{from{transform:translateY(0) scale(1)}to{transform:translateY(-12px) scale(1.1)}}
     .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#00c853;color:#003300;padding:11px 22px;border-radius:30px;font-weight:700;z-index:99;transition:.3s}
     .toast.show{transform:translateX(-50%) translateY(0)}
+    /* ── Crossword ── */
+    .btn-purple{background:linear-gradient(135deg,#9b59b6,#8e44ad);color:#fff}
+    .cw-grid-wrap{overflow:auto;width:100%;max-width:360px;margin:6px 0 10px}
+    .cw-grid{display:inline-grid;border-left:1px solid #333;border-top:1px solid #333}
+    .cw-cell{width:30px;height:30px;border-right:1px solid #333;border-bottom:1px solid #333;position:relative;display:flex;align-items:center;justify-content:center}
+    .cw-cell.black{background:#111}
+    .cw-cell input{width:100%;height:100%;background:transparent;border:none;text-align:center;color:#fff;font-size:.95rem;font-weight:700;text-transform:uppercase;outline:none;caret-color:#00ff66;padding:0}
+    .cw-cell input:focus{background:rgba(0,255,102,.15)}
+    .cw-cell input.correct{color:#00ff66}
+    .cw-cell input.wrong{color:#ff4d6d}
+    .cw-num{position:absolute;top:1px;left:2px;font-size:.45rem;color:rgba(255,255,255,.55);line-height:1;pointer-events:none}
+    .cw-clues{width:100%;max-width:360px;text-align:left;margin-bottom:10px}
+    .cw-clues h3{font-size:.85rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin:8px 0 4px}
+    .cw-clue{font-size:.82rem;color:rgba(255,255,255,.8);margin:3px 0;cursor:pointer;padding:2px 4px;border-radius:5px}
+    .cw-clue:hover,.cw-clue.active{background:rgba(0,255,102,.15);color:#00ff66}
+    .cw-actions{display:flex;gap:8px;margin:4px 0 10px;flex-wrap:wrap;justify-content:center}
+    .cw-actions .btn{width:auto;padding:11px 18px;font-size:.9rem;margin:0}
   </style>
 </head>
 <body>
@@ -55,6 +91,7 @@
       <h1 class="title">HangMeng</h1>
       <p class="subtitle">Guess the word before the man drops</p>
       <button class="btn btn-primary" onclick="showCategories()">Play Solo</button>
+      <button class="btn btn-purple" onclick="showCWCategories()">🔠 Crossword</button>
       <button class="btn btn-pink" onclick="showTwoPlayer()">Two Player</button>
     </div>
 
@@ -86,159 +123,194 @@
       <button class="back-btn" onclick="if(confirm('Quit?'))showMain()">Quit</button>
     </div>
 
-    <div id="screen-2p" class="screen">
-      <h1 class="title" style="font-size:1.9rem">Two Player</h1>
-      <p class="subtitle">Share an invite code with a friend</p>
-      <button class="btn btn-blue" onclick="showCreate()">Create Game</button>
-      <button class="btn btn-secondary" onclick="showJoin()">Join with Code</button>
+    <!-- Crossword category picker -->
+    <div id="screen-cw-cats" class="screen">
+      <h1 class="title" style="font-size:1.9rem">Crossword</h1>
+      <p class="subtitle">Pick a category</p>
+      <div class="category-grid" id="cw-cat-grid"></div>
       <button class="back-btn" onclick="showMain()">← Back</button>
     </div>
 
-    <div id="screen-create" class="screen">
+    <!-- Crossword game -->
+    <div id="screen-cw-game" class="screen">
+      <h1 class="title" style="font-size:1.7rem;margin-bottom:4px">🔠 Crossword</h1>
+      <div class="cw-grid-wrap"><div class="cw-grid" id="cw-grid"></div></div>
+      <div class="cw-actions">
+        <button class="btn btn-primary cw-check-btn" onclick="cwCheck()">✓ Check</button>
+        <button class="btn btn-secondary" onclick="cwRevealOne()">💡 Hint</button>
+        <button class="btn btn-secondary" onclick="cwSolve()">Reveal All</button>
+      </div>
+      <div class="cw-clues" id="cw-clues"></div>
+      <button class="back-btn" onclick="showMain()">← Quit</button>
+    </div>
+
+    <div id="screen-2p" class="screen">
+      <h1 class="title" style="font-size:1.9rem">Two Player</h1>
+      <p class="subtitle">Take turns guessing together</p>
+      <button class="btn btn-blue" onclick="showMPCreate()">Create Game</button>
+      <button class="btn btn-secondary" onclick="showMPJoin()">Join Game</button>
+      <button class="back-btn" onclick="showMain()">← Back</button>
+    </div>
+
+    <div id="screen-mp-create" class="screen">
       <h1 class="title" style="font-size:1.7rem">Create Game</h1>
-      <p class="subtitle">Enter a secret word</p>
+      <p class="subtitle">Pick a category — your friend guesses too</p>
       <div class="input-group">
-        <label>Secret Word</label>
-        <input type="text" id="secret-word" placeholder="e.g. PHOENIX" maxlength="18" autocomplete="off">
+        <label>Your Name</label>
+        <input type="text" id="mp-create-name" placeholder="e.g. Sola" maxlength="16" autocomplete="off">
       </div>
-      <div class="input-group">
-        <label>Hint (optional)</label>
-        <input type="text" id="secret-hint" placeholder="e.g. City" maxlength="30">
-      </div>
-      <button class="btn btn-primary" onclick="generateCode()">Generate Invite Code</button>
-      <div id="code-section" style="display:none;width:100%;flex-direction:column;align-items:center">
-        <div class="code-box" id="invite-code"></div>
-        <button class="btn btn-pink" onclick="copyCode()">📋 Copy Code</button>
-        <button class="btn btn-secondary" style="margin-top:10px" onclick="startAsHost()">Play on this phone</button>
+      <div class="category-grid" id="mp-cat-grid"></div>
+      <div id="mp-create-waiting" style="display:none;text-align:center;width:100%">
+        <div class="code-box" id="mp-room-code"></div>
+        <button class="btn btn-pink" onclick="mpCopyCode()">📋 Copy Code</button>
+        <p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-top:12px">Waiting for your friend to join...</p>
+        <div id="mp-create-status" style="color:#00ff66;font-size:.9rem;margin-top:8px"></div>
       </div>
       <button class="back-btn" onclick="showTwoPlayer()">← Back</button>
     </div>
 
-    <div id="screen-join" class="screen">
+    <div id="screen-mp-join" class="screen">
       <h1 class="title" style="font-size:1.7rem">Join Game</h1>
-      <p class="subtitle">Paste the invite code</p>
+      <p class="subtitle">Enter the room code your friend sent</p>
       <div class="input-group">
-        <label>Invite Code</label>
-        <input type="text" id="join-code" placeholder="Paste code here" autocomplete="off">
+        <label>Your Name</label>
+        <input type="text" id="mp-join-name" placeholder="e.g. Maya" maxlength="16" autocomplete="off">
       </div>
-      <button class="btn btn-primary" onclick="joinGame()">Start Guessing</button>
+      <div class="input-group">
+        <label>Room Code</label>
+        <input type="text" id="mp-join-code" placeholder="e.g. ABC123" maxlength="8" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em;font-size:1.2rem;text-align:center">
+      </div>
+      <button class="btn btn-primary" onclick="mpJoinGame()">Join →</button>
+      <div id="mp-join-error" style="color:#ff4d6d;font-size:.85rem;text-align:center;margin-top:8px"></div>
       <button class="back-btn" onclick="showTwoPlayer()">← Back</button>
+    </div>
+
+    <div id="screen-mp-game" class="screen">
+      <div style="text-align:center;margin-bottom:4px">
+        <span id="mp-turn-banner" style="font-size:.9rem;font-weight:700;padding:4px 14px;border-radius:20px;background:rgba(0,255,102,.15);color:#00ff66">YOUR TURN</span>
+      </div>
+      <div class="hangman-area">
+        <svg class="hangman-svg" viewBox="0 0 200 240">
+          <line x1="40" y1="220" x2="160" y2="220" stroke="#888" stroke-width="5"/>
+          <line x1="60" y1="220" x2="60" y2="30" stroke="#888" stroke-width="5"/>
+          <line x1="60" y1="30" x2="130" y2="30" stroke="#888" stroke-width="5"/>
+          <line x1="130" y1="30" x2="130" y2="55" stroke="#888" stroke-width="3"/>
+          <circle id="mp-part-head" cx="130" cy="75" r="18" fill="none" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="mp-part-body" x1="130" y1="93" x2="130" y2="145" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="mp-part-larm" x1="130" y1="108" x2="102" y2="135" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="mp-part-rarm" x1="130" y1="108" x2="158" y2="135" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="mp-part-lleg" x1="130" y1="145" x2="108" y2="185" stroke="#00ff66" stroke-width="3" style="display:none"/>
+          <line id="mp-part-rleg" x1="130" y1="145" x2="152" y2="185" stroke="#00ff66" stroke-width="3" style="display:none"/>
+        </svg>
+      </div>
+      <div class="word-display" id="mp-word-display"></div>
+      <div class="hint" id="mp-hint-text"></div>
+      <div class="lives" id="mp-lives-text">Lives: 6</div>
+      <div class="keyboard" id="mp-keyboard"></div>
+      <button class="back-btn" onclick="mpQuit()">Quit</button>
     </div>
 
     <div id="screen-result" class="screen">
+      <div id="result-icon"></div>
       <div class="result-msg" id="result-msg"></div>
+      <div id="result-sub" style="font-size:1rem;color:rgba(255,255,255,.6);text-align:center;margin-bottom:4px"></div>
       <div class="reveal" id="result-reveal"></div>
       <button class="btn btn-primary" onclick="showMain()">Play Again</button>
       <button class="btn btn-secondary" onclick="showCategories()">New Category</button>
     </div>
+    <div class="confetti-container" id="confetti-container"></div>
   </div>
   <div class="toast" id="toast">Copied!</div>
+  <audio id="bg-audio" src="music.mp4" loop preload="auto" playsinline></audio>
 
   <script>
     const WORDS={
       Animals:[
-        {w:"AXOLOTL",h:"Smiling amphibian that never fully grows up"},
-        {w:"PANGOLIN",h:"Only mammal covered in scales"},
-        {w:"QUOKKA",h:"Happiest animal on Earth, lives on an Australian island"},
-        {w:"NARWHAL",h:"The unicorn of the sea"},
-        {w:"CAPYBARA",h:"World's largest rodent, weirdly chill"},
-        {w:"WOLVERINE",h:"Not the Marvel one — ferocious mustelid"},
-        {w:"TAPIR",h:"Odd-toed ungulate with a prehensile snout"},
-        {w:"OKAPI",h:"Looks like a zebra-giraffe hybrid, it's neither"},
-        {w:"PLATYPUS",h:"Venomous, lays eggs, has a duck bill — pick a lane"},
-        {w:"MANATEE",h:"Sailors mistook these for mermaids. Sailors were lonely."},
-        {w:"WOMBAT",h:"Produces cube-shaped droppings"},
-        {w:"FOSSA",h:"Madagascar's apex predator, looks like a cat-dog hybrid"},
-        {w:"BINTURONG",h:"Smells like buttered popcorn, lives in trees"},
-        {w:"KINKAJOU",h:"Honey bear of the rainforest canopy"},
-        {w:"AARDVARK",h:"Always first in the dictionary, always last to be seen"}
+        {w:"ELEPHANT",h:"Biggest land animal, never forgets"},
+        {w:"GIRAFFE",h:"Tallest animal on Earth"},
+        {w:"KANGAROO",h:"Carries its baby in a pouch"},
+        {w:"PENGUIN",h:"Tuxedo bird that can't fly"},
+        {w:"DOLPHIN",h:"Smartest ocean mammal"},
+        {w:"CHEETAH",h:"Fastest land animal"},
+        {w:"PANDA",h:"Black and white bear from China"},
+        {w:"ZEBRA",h:"Horse with stripes"},
+        {w:"OCTOPUS",h:"Eight arms, three hearts"},
+        {w:"RHINOCEROS",h:"Big horn on its nose"},
+        {w:"SQUIRREL",h:"Buries nuts for winter"},
+        {w:"FLAMINGO",h:"Stands on one leg, pink bird"},
+        {w:"CROCODILE",h:"Ancient reptile with massive jaws"},
+        {w:"HAMSTER",h:"Tiny pet that runs on a wheel"},
+        {w:"KOALA",h:"Sleeps 22 hours a day in eucalyptus trees"}
       ],
       Movies:[
-        {w:"MULHOLLAND",h:"Lynch. Two women. Hollywood illusions shatter."},
-        {w:"SYNECDOCHE",h:"Kaufman builds a life-sized replica of New York inside a warehouse"},
-        {w:"CHINATOWN",h:"Forget it Jake"},
-        {w:"STALKER",h:"Tarkovsky. Three men seek a room that grants wishes."},
-        {w:"OLDBOY",h:"Korean revenge. The twist will ruin you."},
-        {w:"HEREDITARY",h:"Grief as horror. The attic. The telephone pole."},
-        {w:"MIDSOMMAR",h:"Breakup trip to Sweden goes extremely wrong in broad daylight"},
-        {w:"ANNIHILATION",h:"The shimmer. What it does to DNA."},
-        {w:"PRISONERS",h:"Two missing girls. Hugh Jackman with a hammer."},
-        {w:"IRREVERSIBLE",h:"Gaspar Noe. Time destroys everything. Watch order matters."},
-        {w:"MOONLIGHT",h:"Three chapters. One man. Who is you."},
-        {w:"PARASITE",h:"The stone. The basement. The smell."},
-        {w:"MELANCHOLIA",h:"Von Trier ends the world with a wedding"},
-        {w:"VIDEODROME",h:"Long live the new flesh"},
-        {w:"REPULSION",h:"Polanski. Alone in an apartment. Reality dissolves."}
+        {w:"INCEPTION",h:"Dreams within dreams"},
+        {w:"MATRIX",h:"Red pill or blue pill"},
+        {w:"AVATAR",h:"Blue aliens on Pandora"},
+        {w:"TITANIC",h:"Ship hits an iceberg"},
+        {w:"GLADIATOR",h:"Are you not entertained?"},
+        {w:"INTERSTELLAR",h:"A farmer goes to space to save Earth"},
+        {w:"JOKER",h:"Why so serious?"},
+        {w:"FROZEN",h:"Let it go"},
+        {w:"DUNE",h:"Desert planet, spice, giant worms"},
+        {w:"BATMAN",h:"Dark knight of Gotham"},
+        {w:"ALIEN",h:"In space no one can hear you scream"},
+        {w:"JAWS",h:"You're gonna need a bigger boat"},
+        {w:"SCREAM",h:"What's your favorite scary movie?"},
+        {w:"CASABLANCA",h:"Here's looking at you, kid"},
+        {w:"PARASITE",h:"Korean film, best picture winner 2020"}
       ],
       Food:[
-        {w:"BAKLAVA",h:"Layered pastry soaked in syrup, honey, nuts"},
-        {w:"KHACHAPURI",h:"Georgian cheese boat with an egg in it"},
-        {w:"CHIMICHANGA",h:"Deep fried burrito, Tex-Mex accident of legend"},
-        {w:"BIBIMBAP",h:"Korean rice bowl, mix it all together"},
-        {w:"GOCHUJANG",h:"Fermented Korean chili paste, funky and deep"},
-        {w:"POUTINE",h:"Fries, cheese curds, gravy. Canada's gift."},
-        {w:"INJERA",h:"Ethiopian sourdough flatbread that doubles as the plate"},
-        {w:"CEVICHE",h:"Raw fish cooked by citrus, no heat required"},
-        {w:"MOFONGO",h:"Fried plantain mashed with garlic, Puerto Rican staple"},
-        {w:"JOLLOF",h:"West African rice dish with a whole culture war attached"},
-        {w:"TIRAMISU",h:"Italian dessert. Coffee soaked. Means pick me up."},
-        {w:"STROOPWAFEL",h:"Dutch caramel syrup waffle sandwich"},
-        {w:"SHAKSHUKA",h:"Eggs poached in spiced tomato sauce"},
-        {w:"TAGINE",h:"Moroccan slow-cook in a conical clay pot"},
-        {w:"HORCHATA",h:"Creamy rice water drink, Mexico or Spain depending on who you ask"}
+        {w:"PIZZA",h:"Circular Italian dish with toppings"},
+        {w:"SUSHI",h:"Japanese rice rolls with fish"},
+        {w:"TACO",h:"Mexican folded tortilla"},
+        {w:"BURGER",h:"Beef patty between two buns"},
+        {w:"PASTA",h:"Italian noodles"},
+        {w:"WAFFLE",h:"Grid-patterned breakfast cake"},
+        {w:"RAMEN",h:"Japanese noodle soup"},
+        {w:"BURRITO",h:"Big wrapped tortilla"},
+        {w:"PANCAKE",h:"Flat breakfast cake, syrup on top"},
+        {w:"STEAK",h:"Grilled cut of beef"},
+        {w:"SALAD",h:"Leafy greens in a bowl"},
+        {w:"DONUT",h:"Ring-shaped fried dough"},
+        {w:"CURRY",h:"Spiced sauce dish from South Asia"},
+        {w:"LASAGNA",h:"Layered Italian pasta bake"},
+        {w:"CROISSANT",h:"Buttery crescent-shaped French pastry"}
       ],
       Sports:[
-        {w:"PENTATHLON",h:"Five events: fencing, swimming, riding, shooting, running"},
-        {w:"BIATHLON",h:"Cross country skiing then stop and shoot a rifle"},
-        {w:"SEPAKTAKRAW",h:"Southeast Asian sport: volleyball but you can't use your hands"},
-        {w:"PELOTA",h:"Basque sport, fastest ball game on earth"},
-        {w:"CAPOEIRA",h:"Brazilian martial art disguised as a dance"},
-        {w:"SUMO",h:"Force your opponent out of the ring or down to the ground"},
-        {w:"LACROSSE",h:"Oldest sport in North America, Indigenous origin"},
-        {w:"SKELETON",h:"You go head-first down an icy track on a tiny sled"},
-        {w:"KABBADI",h:"Tag meets wrestling, one breath, South Asian"},
-        {w:"HURLING",h:"Irish sport, fastest field game in the world"},
-        {w:"BOBSLED",h:"Cool Runnings. Four people in a pod down ice."},
-        {w:"DECATHLON",h:"Ten track and field events across two days"},
-        {w:"POLO",h:"Horse. Mallet. Ball. Old money."},
-        {w:"FENCING",h:"Sword fighting in a white mask, scored electronically"},
-        {w:"SQUASH",h:"Not the vegetable. Racket sport inside four walls."}
+        {w:"SOCCER",h:"Most popular sport on Earth"},
+        {w:"BASKETBALL",h:"Put the ball through the hoop"},
+        {w:"TENNIS",h:"Racket sport, Wimbledon"},
+        {w:"BASEBALL",h:"America's pastime, bat and glove"},
+        {w:"HOCKEY",h:"Ice rink, puck, sticks"},
+        {w:"VOLLEYBALL",h:"Six players, keep it off the ground"},
+        {w:"CRICKET",h:"Bat and ball, big in England and India"},
+        {w:"GOLF",h:"Lowest score wins"},
+        {w:"SURFING",h:"Ride ocean waves on a board"},
+        {w:"BOXING",h:"Two fighters, gloves, ring"},
+        {w:"RUGBY",h:"Like football but no pads"},
+        {w:"SKATEBOARD",h:"Four wheels, tricks, Tony Hawk"},
+        {w:"SWIMMING",h:"Fastest in the pool wins"},
+        {w:"CYCLING",h:"Tour de France is its biggest race"},
+        {w:"WRESTLING",h:"Pin your opponent to the mat"}
       ],
       Tech:[
-        {w:"RECURSION",h:"See: recursion"},
-        {w:"IDEMPOTENT",h:"Do it once or a hundred times, same result"},
-        {w:"POLYMORPHISM",h:"Same interface, different behavior underneath"},
-        {w:"DEADLOCK",h:"Two threads waiting on each other forever"},
-        {w:"HEXADECIMAL",h:"Base 16. 0-9 then A-F."},
-        {w:"KUBERNETES",h:"Container orchestration. Greek for helmsman."},
-        {w:"MEMOIZATION",h:"Cache the result so you never solve it twice"},
-        {w:"ENDIANNESS",h:"Big or little? Which byte goes first?"},
-        {w:"SHARDING",h:"Split the database horizontally across machines"},
-        {w:"WEBHOOK",h:"Don't call us, we'll call you — HTTP edition"},
-        {w:"THROUGHPUT",h:"How much work gets done per unit of time"},
-        {w:"OBFUSCATION",h:"Making code deliberately hard to read"},
-        {w:"MONOREPO",h:"All your projects in one giant repository"},
-        {w:"EIGENVECTOR",h:"Google's PageRank is basically this"},
-        {w:"CRYPTOGRAPHY",h:"Math that keeps secrets"}
+        {w:"JAVASCRIPT",h:"Language that runs in every browser"},
+        {w:"PYTHON",h:"Popular coding language, named after a comedy group"},
+        {w:"GITHUB",h:"Where developers store and share code"},
+        {w:"ANDROID",h:"Google's mobile operating system"},
+        {w:"CRYPTO",h:"Digital currency on the blockchain"},
+        {w:"ROBOT",h:"Automated machine that does tasks"},
+        {w:"SERVER",h:"Computer that serves data to others"},
+        {w:"PIXEL",h:"Smallest unit of a digital image"},
+        {w:"QUANTUM",h:"Next-gen computing using qubits"},
+        {w:"NEURAL",h:"Type of AI network inspired by the brain"},
+        {w:"BLOCKCHAIN",h:"Decentralized chain of data blocks"},
+        {w:"LAPTOP",h:"Portable personal computer"},
+        {w:"ROUTER",h:"Box that sends WiFi through your house"},
+        {w:"DATABASE",h:"Organized collection of stored data"},
+        {w:"ALGORITHM",h:"Step-by-step instructions for a computer"}
       ],
-      Nature:[
-        {w:"SOLFATARA",h:"Volcanic crater that vents sulfurous gas but doesn't erupt"},
-        {w:"PERIGEE",h:"Moon's closest point to Earth — when it looks huge"},
-        {w:"FJORD",h:"Glacier-carved inlet between cliffs, very Norwegian"},
-        {w:"SINKHOLE",h:"Ground collapses suddenly into an underground void"},
-        {w:"PERMAFROST",h:"Ground that stays frozen year-round, melting fast"},
-        {w:"SUPERNOVA",h:"A star explodes and briefly outshines a galaxy"},
-        {w:"BIOLUMINESCENCE",h:"Living things that glow in the dark"},
-        {w:"MAELSTROM",h:"Powerful whirlpool in the sea"},
-        {w:"SOLSTICE",h:"Longest or shortest day of the year"},
-        {w:"AQUIFER",h:"Underground layer of rock that holds water"},
-        {w:"TECTONIC",h:"The plates that move continents over millions of years"},
-        {w:"PARALLAX",h:"How stars seem to shift position as Earth orbits"},
-        {w:"EROSION",h:"Wind and water slowly eating rock away"},
-        {w:"ESTUARY",h:"Where the river meets the sea"},
-        {w:"THERMOCLINE",h:"Sharp temperature boundary layer in the ocean"}
-      ],
-      Anime:[
+            Anime:[
         {w:"SHINIGAMI",h:"Death god. Soul Society knows."},
         {w:"NAKAMA",h:"More than friends. The word a certain pirate lives by."},
         {w:"MANGEKYO",h:"Awakened through trauma. Itachi had it."},
@@ -259,6 +331,23 @@
         {w:"RENGOKU",h:"Flame pillar. Akaza couldn't break him."},
         {w:"KAMADO",h:"The surname carried through fire and demons"},
         {w:"GIORNO",h:"Gangster's son with a dream. Gold Experience."}
+      ],
+      Nature:[
+        {w:"VOLCANO",h:"Mountain that erupts with lava"},
+        {w:"GLACIER",h:"Slow-moving river of ice"},
+        {w:"CANYON",h:"Deep valley carved by a river"},
+        {w:"WATERFALL",h:"Water falling off a cliff"},
+        {w:"FOREST",h:"Dense area of trees"},
+        {w:"DESERT",h:"Driest place on Earth"},
+        {w:"OCEAN",h:"Covers 71% of the planet"},
+        {w:"MOUNTAIN",h:"Everest is the tallest"},
+        {w:"THUNDER",h:"The loud boom after lightning"},
+        {w:"RAINBOW",h:"Seven colors after the rain"},
+        {w:"AURORA",h:"Northern lights in the sky"},
+        {w:"CAVERN",h:"Large underground cave"},
+        {w:"ISLAND",h:"Land surrounded by water"},
+        {w:"RIVER",h:"Flowing water between two banks"},
+        {w:"MEADOW",h:"Open grassy field"}
       ]
     };
     const PARTS=["part-head","part-body","part-larm","part-rarm","part-lleg","part-rleg"];
@@ -272,19 +361,33 @@
         const b=document.createElement("button");b.className="cat-btn";b.textContent=cat;b.onclick=()=>startSolo(cat);grid.appendChild(b);
       });
       const r=document.createElement("button");r.className="cat-btn";r.textContent="🎲 Random";r.style.gridColumn="1/-1";
-      r.onclick=()=>{const cats=Object.keys(WORDS);startSolo(cats[Math.floor(Math.random()*cats.length)])};grid.appendChild(r);
+      r.onclick=()=>{const c=Object.keys(WORDS);const cat=c[Math.floor(Math.random()*c.length)];const pick=WORDS[cat][Math.floor(Math.random()*WORDS[cat].length)];currentWord=pick.w;currentHint=pick.h;startGame()};grid.appendChild(r);
       showScreen("screen-cats");
     }
     function showTwoPlayer(){showScreen("screen-2p")}
-    function showCreate(){document.getElementById("secret-word").value="";document.getElementById("secret-hint").value="";document.getElementById("code-section").style.display="none";showScreen("screen-create")}
-    function showJoin(){document.getElementById("join-code").value="";showScreen("screen-join")}
+    function showMPCreate(){
+      document.getElementById("mp-create-name").value="";
+      document.getElementById("mp-create-waiting").style.display="none";
+      // Build category grid
+      const grid=document.getElementById("mp-cat-grid");grid.innerHTML="";
+      Object.keys(WORDS).forEach(cat=>{
+        const b=document.createElement("button");b.className="cat-btn";b.textContent=cat;
+        b.onclick=()=>mpCreateGame(cat);grid.appendChild(b);
+      });
+      const r=document.createElement("button");r.className="cat-btn";r.textContent="🎲 Random";
+      r.style.gridColumn="1/-1";
+      r.onclick=()=>{const c=Object.keys(WORDS);mpCreateGame(c[Math.floor(Math.random()*c.length)])};
+      grid.appendChild(r);
+      showScreen("screen-mp-create");
+    }
+    function showMPJoin(){document.getElementById("mp-join-name").value="";document.getElementById("mp-join-code").value="";document.getElementById("mp-join-error").textContent="";showScreen("screen-mp-join")}
 
     function startSolo(cat){const list=WORDS[cat];const pick=list[Math.floor(Math.random()*list.length)];currentWord=pick.w;currentHint=pick.h;startGame()}
     function startGame(){
       guessed=new Set();wrongs=0;
       PARTS.forEach(id=>document.getElementById(id).style.display="none");
       updateWordDisplay();
-      document.getElementById("hint-text").textContent=currentHint?"Hint: "+currentHint:"";
+      document.getElementById("hint-text").textContent=currentHint?"Category: "+currentHint:"";
       document.getElementById("lives-text").textContent="Lives: 6";
       buildKeyboard();showScreen("screen-game");
     }
@@ -303,47 +406,501 @@
       if(currentWord.includes(letter)){btn.classList.add("correct");updateWordDisplay();
         if([...currentWord].every(ch=>ch===" "||guessed.has(ch)))endGame(true);
       }else{btn.classList.add("wrong");wrongs++;
-        if(wrongs<=PARTS.length)document.getElementById(PARTS[wrongs-1]).style.display="block";
+      if(wrongs<=PARTS.length)document.getElementById(PARTS[wrongs-1]).style.display="block";
         document.getElementById("lives-text").textContent="Lives: "+(maxWrongs-wrongs);
         if(wrongs>=maxWrongs)endGame(false);
       }
     }
     function endGame(won){
-      const msg=document.getElementById("result-msg"),rev=document.getElementById("result-reveal");
-      if(won){msg.textContent="YOU WIN! 🔥";msg.className="result-msg win";rev.textContent="Word was: "+currentWord}
-      else{msg.textContent="GAME OVER";msg.className="result-msg lose";rev.textContent="The word was: "+currentWord}
-      showScreen("screen-result");
+      const msg=document.getElementById("result-msg");
+      const rev=document.getElementById("result-reveal");
+      const icon=document.getElementById("result-icon");
+      const sub=document.getElementById("result-sub");
+      clearConfetti();
+      if(won){
+        msg.textContent="YOU WIN! 🔥";
+        msg.className="result-msg win";
+        icon.innerHTML='<span class="trophy">🏆</span>';
+        const subs=["That's what I'm talking about!","Too easy.","Straight fire.","You really did that.","Unstoppable."];
+        sub.textContent=subs[Math.floor(Math.random()*subs.length)];
+        rev.textContent="Word was: "+currentWord;
+        showScreen("screen-result");
+        launchConfetti();
+      } else {
+        msg.textContent="GAME OVER";
+        msg.className="result-msg lose";
+        icon.innerHTML='<span class="skull">💀</span>';
+        const subs=["He ded.","Moment of silence.","You let him die.","F in the chat.","Couldn't save him bro."];
+        sub.textContent=subs[Math.floor(Math.random()*subs.length)];
+        rev.textContent="The word was: "+currentWord;
+        showScreen("screen-result");
+      }
     }
 
-    function encodeWord(w,h){return btoa(unescape(encodeURIComponent(w.toUpperCase().trim()+"|"+(h||"")))).replace(/=+$/,"")}
-    function decodeCode(c){try{let p=c;while(p.length%4)p+="=";const d=decodeURIComponent(escape(atob(p)));const[w,h]=d.split("|");return w&&w.length>1?{word:w.toUpperCase(),hint:h||""}:null}catch(e){return null}}
-    function generateCode(){
-      const w=document.getElementById("secret-word").value.trim().toUpperCase();
-      if(w.length<2){alert("Need at least 2 letters");return}
-      if(!/^[A-Z ]+$/.test(w)){alert("Only letters & spaces");return}
-      const h=document.getElementById("secret-hint").value.trim();
-      document.getElementById("invite-code").textContent=encodeWord(w,h);
-      document.getElementById("code-section").style.display="flex";
-      window._hostWord=w;window._hostHint=h;
+    function launchConfetti(){
+      const container=document.getElementById("confetti-container");
+      const colors=["#00ff66","#00e5ff","#ff00aa","#ffd700","#ff6b35","#ffffff"];
+      for(let i=0;i<120;i++){
+        const el=document.createElement("div");
+        el.className="confetti-piece";
+        el.style.left=Math.random()*100+"vw";
+        el.style.background=colors[Math.floor(Math.random()*colors.length)];
+        el.style.borderRadius=Math.random()>.5?"50%":"2px";
+        el.style.width=(6+Math.random()*8)+"px";
+        el.style.height=(6+Math.random()*8)+"px";
+        el.style.animationDuration=(1.5+Math.random()*2)+"s";
+        el.style.animationDelay=(Math.random()*0.8)+"s";
+        container.appendChild(el);
+      }
+      setTimeout(clearConfetti,4000);
     }
-    function copyCode(){
-      const code=document.getElementById("invite-code").textContent;
-      navigator.clipboard.writeText(code).then(()=>{const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)})
-      .catch(()=>{const ta=document.createElement("textarea");ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
-        const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)});
+
+    function clearConfetti(){
+      const container=document.getElementById("confetti-container");
+      container.innerHTML="";
     }
-    function startAsHost(){if(!window._hostWord)return;currentWord=window._hostWord;currentHint=window._hostHint||"Custom";startGame()}
-    function joinGame(){
-      let code=document.getElementById("join-code").value
-        .trim()
-        .replace(/[\u200B-\u200D\uFEFF]/g,"")
-        .replace(/\s+/g,"");
-      if(!code){alert("Paste a code first");return}
-      const data=decodeCode(code);
-      if(!data){alert("Invalid code — check for extra spaces or weird characters");return}
-      currentWord=data.word;currentHint=data.hint||"Friend's word";startGame();
+
+    // ── Multiplayer ──────────────────────────────────────────────────────────
+    const API = 'https://hangmeng-api.saintsola13.workers.dev';
+    const WS_API = 'wss://hangmeng-api.saintsola13.workers.dev';
+    let mpPlayerId = localStorage.getItem('mp_player_id') || crypto.randomUUID();
+    localStorage.setItem('mp_player_id', mpPlayerId);
+    let mpRoomCode = null;
+    let mpSocket = null;
+    let mpGame = null;
+    const MP_PARTS = ['mp-part-head','mp-part-body','mp-part-larm','mp-part-rarm','mp-part-lleg','mp-part-rleg'];
+
+    async function mpCreateGame(cat){
+      const name = document.getElementById('mp-create-name').value.trim() || 'Player 1';
+      const list = WORDS[cat];
+      const pick = list[Math.floor(Math.random()*list.length)];
+      mpRoomCode = Math.random().toString(36).slice(2,8).toUpperCase();
+      const res = await fetch(`${API}/api/room/${mpRoomCode}?action=create`,{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({word:pick.w,hint:pick.h,playerId:mpPlayerId,playerName:name,roomCode:mpRoomCode})
+      }).then(r=>r.json()).catch(()=>null);
+      if(!res||!res.ok){alert('Could not create game. Try again.');return}
+      document.getElementById('mp-room-code').textContent=mpRoomCode;
+      const w=document.getElementById('mp-create-waiting');
+      w.style.display='flex';w.style.flexDirection='column';w.style.alignItems='center';
+      document.getElementById('mp-cat-grid').style.pointerEvents='none';
+      mpConnectWS(mpRoomCode);
     }
+
+    function mpCopyCode(){
+      navigator.clipboard.writeText(document.getElementById('mp-room-code').textContent).catch(()=>{});
+      const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);
+    }
+
+    async function mpJoinGame(){
+      const name = document.getElementById('mp-join-name').value.trim() || 'Player 2';
+      const code = document.getElementById('mp-join-code').value.trim().toUpperCase();
+      if(!code){document.getElementById('mp-join-error').textContent='Enter a room code';return}
+      const res = await fetch(`${API}/api/room/${code}?action=join`,{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({playerId:mpPlayerId,playerName:name})
+      }).then(r=>r.json()).catch(()=>null);
+      if(!res||res.error){document.getElementById('mp-join-error').textContent=res?.error||'Room not found';return}
+      mpRoomCode=code; mpConnectWS(code);
+    }
+
+    function mpConnectWS(roomCode){
+      if(mpSocket){try{mpSocket.close()}catch(e){}}
+      mpSocket=new WebSocket(`${WS_API}/api/room/${roomCode}?action=ws&playerId=${mpPlayerId}`);
+      mpSocket.onmessage=(evt)=>{
+        try{const msg=JSON.parse(evt.data);if(msg.type==='state'||msg.type==='waiting')mpHandleState(msg);}catch(e){}
+      };
+      mpSocket.onclose=()=>{if(mpGame&&mpGame.status==='playing')setTimeout(()=>mpConnectWS(mpRoomCode),2000);};
+    }
+
+    function mpHandleState(msg){
+      if(msg.type==='waiting') return;
+      mpGame=msg.game;
+      const game=mpGame;
+      if(game.players.length===2){
+        const s=document.getElementById('mp-create-status');
+        if(s) s.textContent=(game.players[1]?.name||'Friend')+' joined!';
+      }
+      if(game.status==='playing'||game.status==='won'||game.status==='lost'){
+        mpRenderGame();
+        if(game.status==='won'||game.status==='lost') mpEndGame();
+      }
+    }
+
+    function mpRenderGame(){
+      const game=mpGame; if(!game) return;
+      showScreen('screen-mp-game');
+      let d=""; for(let ch of game.word) d+=(game.guessed.includes(ch)?ch:"_")+" ";
+      document.getElementById('mp-word-display').textContent=d.trim();
+      document.getElementById('mp-hint-text').textContent=game.hint?'Hint: '+game.hint:'';
+      document.getElementById('mp-lives-text').textContent='Lives: '+(game.maxWrongs-game.wrongs);
+      MP_PARTS.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.style.display=i<game.wrongs?'block':'none';});
+      const myIdx=game.players.findIndex(p=>p.id===mpPlayerId);
+      const isMyTurn=myIdx===game.currentTurn;
+      const banner=document.getElementById('mp-turn-banner');
+      const otherName=game.players.find(p=>p.id!==mpPlayerId)?.name||'Them';
+      if(game.status==='playing'){
+        if(isMyTurn){banner.textContent='YOUR TURN';banner.style.background='rgba(0,255,102,.2)';banner.style.color='#00ff66';}
+        else{banner.textContent=otherName+"'s TURN";banner.style.background='rgba(255,0,170,.15)';banner.style.color='#ff00aa';}
+      }
+      const kb=document.getElementById('mp-keyboard');kb.innerHTML='';
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l=>{
+        const b=document.createElement('button');b.className='key';b.textContent=l;
+        if(game.guessed.includes(l)){b.classList.add(game.word.includes(l)?'correct':'wrong');b.disabled=true;}
+        else if(!isMyTurn||game.status!=='playing'){b.disabled=true;b.style.opacity='0.35';}
+        else{b.onclick=()=>mpGuess(l);}
+        kb.appendChild(b);
+      });
+    }
+
+    async function mpGuess(letter){
+      if(!mpGame||mpGame.status!=='playing') return;
+      if(mpGame.players.findIndex(p=>p.id===mpPlayerId)!==mpGame.currentTurn) return;
+      const res=await fetch(`${API}/api/room/${mpRoomCode}?action=guess`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({playerId:mpPlayerId,letter})
+      }).then(r=>r.json()).catch(()=>null);
+      if(res?.game){mpGame=res.game;mpRenderGame();if(res.game.status==='won'||res.game.status==='lost')mpEndGame();}
+    }
+
+    function mpEndGame(){
+      const game=mpGame;
+      const iWon=game.status==='won'&&game.winner===mpPlayerId;
+      const winnerName=game.players.find(p=>p.id===game.winner)?.name||'Someone';
+      const icon=document.getElementById('result-icon'),msg=document.getElementById('result-msg');
+      const sub=document.getElementById('result-sub'),rev=document.getElementById('result-reveal');
+      clearConfetti();
+      if(game.status==='won'){
+        msg.textContent=iWon?'YOU WIN! 🔥':winnerName+' WINS! 🔥';msg.className='result-msg win';
+        icon.innerHTML='<span class="trophy">🏆</span>';
+        const subs=iWon?["That's what I'm talking about!","Too easy.","Straight fire."]:["Give credit.","They got you.",winnerName+" cooked."];
+        sub.textContent=subs[Math.floor(Math.random()*subs.length)];
+        if(iWon) launchConfetti();
+      } else {
+        msg.textContent='GAME OVER';msg.className='result-msg lose';
+        icon.innerHTML='<span class="skull">💀</span>';
+        sub.textContent=["Y'all let him die.","Both caught an L.","F in the chat.","Couldn't save him."][Math.floor(Math.random()*4)];
+      }
+      rev.textContent='The word was: '+game.word;
+      setTimeout(()=>showScreen('screen-result'),800);
+    }
+
+    function mpQuit(){
+      if(mpSocket){try{mpSocket.close()}catch(e){}mpSocket=null;}
+      mpGame=null;mpRoomCode=null;showMain();
+    }
+    // Background music — starts on first tap/click
+    const bgAudio = document.getElementById('bg-audio');
+    let musicStarted = false;
+    function startMusic() {
+      if (musicStarted || !bgAudio) return;
+      bgAudio.volume = 0.45;
+      bgAudio.play().then(() => { musicStarted = true; }).catch(() => {});
+    }
+    document.addEventListener('touchstart', startMusic, { once: true, passive: true });
+    document.addEventListener('click', startMusic, { once: true });
+
     showMain();
+
+    // ── CROSSWORD ENGINE ─────────────────────────────────────────────────────
+    const CW_WORDS = {
+      Animals: WORDS.Animals.map(x=>({w:x.w.replace(/ /g,''),h:x.h})),
+      Movies:  WORDS.Movies.map(x=>({w:x.w.replace(/ /g,''),h:x.h})),
+      Food:    WORDS.Food.map(x=>({w:x.w.replace(/ /g,''),h:x.h})),
+      Sports:  WORDS.Sports.map(x=>({w:x.w.replace(/ /g,''),h:x.h})),
+      Tech:    WORDS.Tech.map(x=>({w:x.w.replace(/ /g,''),h:x.h})),
+      Anime:   WORDS.Anime.map(x=>({w:x.w.replace(/ /g,''),h:x.h})),
+      Nature:  WORDS.Nature.map(x=>({w:x.w.replace(/ /g,''),h:x.h}))
+    };
+
+    let cwPlaced = [];   // {word, hint, row, col, dir, num}
+    let cwGrid   = [];   // 2D array of {letter, wordIdxs:[]}
+    let cwRows, cwCols;
+    let cwHintsUsed = 0;
+
+    function showCWCategories(){
+      const grid = document.getElementById('cw-cat-grid'); grid.innerHTML='';
+      Object.keys(CW_WORDS).forEach(cat=>{
+        const b=document.createElement('button'); b.className='cat-btn'; b.textContent=cat;
+        b.onclick=()=>startCrossword(cat); grid.appendChild(b);
+      });
+      const r=document.createElement('button'); r.className='cat-btn'; r.textContent='🎲 Random'; r.style.gridColumn='1/-1';
+      r.onclick=()=>{const ks=Object.keys(CW_WORDS); startCrossword(ks[Math.floor(Math.random()*ks.length)])};
+      grid.appendChild(r);
+      showScreen('screen-cw-cats');
+    }
+
+    function startCrossword(cat){
+      const pool = [...CW_WORDS[cat]].sort(()=>Math.random()-.5);
+      // Pick up to 10 words, min length 4
+      const chosen = pool.filter(x=>x.w.length>=4).slice(0,10);
+      if(chosen.length < 3){alert('Not enough words — try another category'); return;}
+      cwPlaced = buildCrossword(chosen);
+      if(!cwPlaced || cwPlaced.length < 3){
+        // retry once with a different shuffle
+        const pool2 = [...CW_WORDS[cat]].sort(()=>Math.random()-.5).filter(x=>x.w.length>=4).slice(0,10);
+        cwPlaced = buildCrossword(pool2);
+      }
+      cwHintsUsed = 0;
+      renderCWGrid();
+      showScreen('screen-cw-game');
+    }
+
+    // ── Grid builder ────────────────────────────────────────────────────────
+    function buildCrossword(entries){
+      const SIZE = 22;
+      let grid = Array.from({length:SIZE},()=>Array(SIZE).fill(null));
+      let placed = [];
+      let num = 1;
+
+      function canPlace(w, row, col, dir){
+        const len = w.length;
+        if(dir==='H'){
+          if(col<0||col+len>SIZE) return false;
+          if(col>0 && grid[row][col-1]) return false;
+          if(col+len<SIZE && grid[row][col+len]) return false;
+        } else {
+          if(row<0||row+len>SIZE) return false;
+          if(row>0 && grid[row-1][col]) return false;
+          if(row+len<SIZE && grid[row+len][col]) return false;
+        }
+        let intersects = 0;
+        for(let i=0;i<len;i++){
+          const r = dir==='H'?row:row+i;
+          const c = dir==='H'?col+i:col;
+          if(r<0||r>=SIZE||c<0||c>=SIZE) return false;
+          const cell = grid[r][c];
+          if(cell){
+            if(cell !== w[i]) return false;
+            intersects++;
+          } else {
+            if(dir==='H'){
+              if(grid[r-1]?.[c] || grid[r+1]?.[c]) return false;
+            } else {
+              if(grid[r]?.[c-1] || grid[r]?.[c+1]) return false;
+            }
+          }
+        }
+        return placed.length===0 || intersects>0;
+      }
+
+      function doPlace(w, hint, row, col, dir){
+        for(let i=0;i<w.length;i++){
+          const r=dir==='H'?row:row+i, c=dir==='H'?col+i:col;
+          grid[r][c]=w[i];
+        }
+        placed.push({word:w, hint, row, col, dir, num:num++});
+      }
+
+      // First word horizontal, centered
+      const first = entries[0];
+      const fw = first.w, fh = first.h;
+      const startR = Math.floor(SIZE/2);
+      const startC = Math.floor((SIZE - fw.length) / 2);
+      doPlace(fw, fh, startR, startC, 'H');
+
+      for(let ei=1; ei<entries.length; ei++){
+        const {w, h} = entries[ei];
+        let bestRow=-1, bestCol=-1, bestDir='H', bestScore=-1;
+
+        for(const p of placed){
+          const pw = p.word;
+          const pdir = p.dir==='H' ? 'V' : 'H';
+          for(let pi=0; pi<pw.length; pi++){
+            for(let wi=0; wi<w.length; wi++){
+              if(pw[pi] !== w[wi]) continue;
+              let row, col;
+              if(p.dir==='H'){ row = p.row - wi;  col = p.col + pi; }
+              else            { row = p.row + pi;  col = p.col - wi; }
+              if(canPlace(w, row, col, pdir)){
+                const score = Math.random();
+                if(score > bestScore){ bestScore=score; bestRow=row; bestCol=col; bestDir=pdir; }
+              }
+            }
+          }
+        }
+        if(bestRow >= 0) doPlace(w, h, bestRow, bestCol, bestDir);
+      }
+
+      if(placed.length < 2) return null;
+
+      // Trim to bounding box + 1 padding
+      let minR=SIZE, maxR=0, minC=SIZE, maxC=0;
+      for(const p of placed){
+        const endR = p.dir==='H' ? p.row : p.row+p.word.length-1;
+        const endC = p.dir==='H' ? p.col+p.word.length-1 : p.col;
+        minR=Math.min(minR,p.row); maxR=Math.max(maxR,endR);
+        minC=Math.min(minC,p.col); maxC=Math.max(maxC,endC);
+      }
+      minR=Math.max(0,minR-1); minC=Math.max(0,minC-1);
+      maxR=Math.min(SIZE-1,maxR+1); maxC=Math.min(SIZE-1,maxC+1);
+
+      cwRows=maxR-minR+1; cwCols=maxC-minC+1;
+      cwGrid=Array.from({length:cwRows},(_,r)=>Array.from({length:cwCols},(_,c)=>{
+        const letter=grid[minR+r][minC+c];
+        return letter ? {letter, userInput:''} : null;
+      }));
+      placed.forEach(p=>{ p.row-=minR; p.col-=minC; });
+      return placed;
+    }
+
+    // ── Render ───────────────────────────────────────────────────────────────
+    function renderCWGrid(){
+      const container = document.getElementById('cw-grid');
+      container.style.gridTemplateColumns = `repeat(${cwCols},30px)`;
+      container.innerHTML='';
+
+      // Map which cells start a numbered word
+      const numMap={};
+      cwPlaced.forEach(p=>{ numMap[`${p.row},${p.col}`]=p.num; });
+
+      for(let r=0;r<cwRows;r++){
+        for(let c=0;c<cwCols;c++){
+          const cell=document.createElement('div'); cell.className='cw-cell';
+          const data=cwGrid[r][c];
+          if(!data){cell.classList.add('black');}
+          else{
+            if(numMap[`${r},${c}`]){
+              const n=document.createElement('span'); n.className='cw-num'; n.textContent=numMap[`${r},${c}`];
+              cell.appendChild(n);
+            }
+            const inp=document.createElement('input');
+            inp.maxLength=1; inp.autocomplete='off'; inp.autocorrect='off'; inp.autocapitalize='characters'; inp.spellcheck=false;
+            inp.dataset.r=r; inp.dataset.c=c;
+            inp.addEventListener('input',e=>{
+              const v=e.target.value.toUpperCase().slice(-1);
+              e.target.value=v;
+              cwGrid[r][c].userInput=v;
+              cwAdvanceCursor(r,c,e.target);
+            });
+            inp.addEventListener('keydown',e=>{
+              if(e.key==='Backspace'&&!e.target.value) cwMoveCursor(r,c,'back');
+            });
+            cell.appendChild(inp);
+          }
+          container.appendChild(cell);
+        }
+      }
+      renderCWClues();
+    }
+
+    function getInput(r,c){
+      return document.querySelector(`#cw-grid .cw-cell:nth-child(${r*cwCols+c+1}) input`);
+    }
+
+    function cwAdvanceCursor(r,c,el){
+      // Find which word this cell belongs to, advance in that direction
+      const word = cwPlaced.find(p=>{
+        if(p.dir==='H') return p.row===r && c>=p.col && c<p.col+p.word.length;
+        return p.col===c && r>=p.row && r<p.row+p.word.length;
+      });
+      if(!word) return;
+      const nr=word.dir==='H'?r:r+1, nc=word.dir==='H'?c+1:c;
+      if(nr<cwRows&&nc<cwCols&&cwGrid[nr][nc]){
+        const next=getInput(nr,nc); if(next) next.focus();
+      }
+    }
+
+    function cwMoveCursor(r,c,dir){
+      const word=cwPlaced.find(p=>{
+        if(p.dir==='H') return p.row===r && c>=p.col && c<p.col+p.word.length;
+        return p.col===c && r>=p.row && r<p.row+p.word.length;
+      });
+      if(!word) return;
+      const pr=word.dir==='H'?r:r-1, pc=word.dir==='H'?c-1:c;
+      if(pr>=0&&pc>=0&&cwGrid[pr][pc]){
+        const prev=getInput(pr,pc); if(prev) prev.focus();
+      }
+    }
+
+    function renderCWClues(){
+      const container=document.getElementById('cw-clues'); container.innerHTML='';
+      const across=cwPlaced.filter(p=>p.dir==='H').sort((a,b)=>a.num-b.num);
+      const down=cwPlaced.filter(p=>p.dir==='V').sort((a,b)=>a.num-b.num);
+      function makeSection(title,list){
+        const h=document.createElement('h3'); h.textContent=title; container.appendChild(h);
+        list.forEach(p=>{
+          const d=document.createElement('div'); d.className='cw-clue'; d.id=`clue-${p.num}-${p.dir}`;
+          d.textContent=`${p.num}. ${p.hint}`;
+          d.onclick=()=>highlightWord(p);
+          container.appendChild(d);
+        });
+      }
+      makeSection('ACROSS →', across);
+      makeSection('DOWN ↓', down);
+    }
+
+    function highlightWord(p){
+      document.querySelectorAll('.cw-clue').forEach(el=>el.classList.remove('active'));
+      const clueEl=document.getElementById(`clue-${p.num}-${p.dir}`);
+      if(clueEl){clueEl.classList.add('active'); clueEl.scrollIntoView({behavior:'smooth',block:'nearest'});}
+      const firstInp=getInput(p.row,p.col);
+      if(firstInp) firstInp.focus();
+    }
+
+    function cwCheck(){
+      let allCorrect=true, anyWrong=false;
+      for(let r=0;r<cwRows;r++){
+        for(let c=0;c<cwCols;c++){
+          const data=cwGrid[r][c]; if(!data) continue;
+          const inp=getInput(r,c); if(!inp) continue;
+          const val=inp.value.toUpperCase();
+          inp.classList.remove('correct','wrong');
+          if(val==='')  {allCorrect=false;}
+          else if(val===data.letter){inp.classList.add('correct');}
+          else {inp.classList.add('wrong'); allCorrect=false; anyWrong=true;}
+        }
+      }
+      if(allCorrect){
+        setTimeout(()=>{
+          clearConfetti(); launchConfetti();
+          const msg=document.getElementById('result-msg'), rev=document.getElementById('result-reveal');
+          const icon=document.getElementById('result-icon'), sub=document.getElementById('result-sub');
+          msg.textContent='SOLVED! 🔥'; msg.className='result-msg win';
+          icon.innerHTML='<span class="trophy">🏆</span>';
+          sub.textContent='Crossword complete. You a scholar.';
+          rev.textContent='';
+          showScreen('screen-result');
+        },300);
+      } else if(anyWrong){
+        showToast('Some letters are wrong ❌');
+      } else {
+        showToast('Keep going...');
+      }
+    }
+
+    function cwRevealOne(){
+      // Reveal first empty or wrong cell
+      for(let r=0;r<cwRows;r++){
+        for(let c=0;c<cwCols;c++){
+          const data=cwGrid[r][c]; if(!data) continue;
+          const inp=getInput(r,c); if(!inp) continue;
+          if(inp.value.toUpperCase()!==data.letter){
+            inp.value=data.letter; cwGrid[r][c].userInput=data.letter;
+            inp.classList.remove('wrong'); inp.classList.add('correct');
+            cwHintsUsed++;
+            showToast('💡 One letter revealed');
+            return;
+          }
+        }
+      }
+      showToast('All done already!');
+    }
+
+    function cwSolve(){
+      for(let r=0;r<cwRows;r++){
+        for(let c=0;c<cwCols;c++){
+          const data=cwGrid[r][c]; if(!data) continue;
+          const inp=getInput(r,c); if(!inp) continue;
+          inp.value=data.letter; inp.classList.add('correct');
+        }
+      }
+    }
+
+    function showToast(msg){
+      const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),2000);
+    }
   </script>
 </body>
 </html>
