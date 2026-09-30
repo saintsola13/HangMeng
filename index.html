@@ -302,7 +302,7 @@
     .bo-wrap{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:8px}
     .bo-hud{display:flex;justify-content:space-between;width:100%;max-width:400px;font-size:.82rem;font-weight:800;letter-spacing:.08em;color:rgba(255,255,255,.7);padding:0 4px}
     .bo-hud span{color:var(--gold);text-shadow:0 0 8px rgba(255,215,0,.5)}
-    #bo-canvas{border:1px solid rgba(255,215,0,.28);border-radius:12px;background:#0a0008;display:block;max-width:100%;box-shadow:0 0 24px rgba(255,0,80,.12);touch-action:none;cursor:none}
+    #bo-canvas{border:1px solid rgba(255,215,0,.28);border-radius:12px;background:#0a0008;display:block;width:100%;max-width:100%;height:auto;box-shadow:0 0 24px rgba(255,0,80,.12);touch-action:none;cursor:crosshair;-webkit-user-select:none;user-select:none}
     .bo-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:280px;margin-top:6px}
     .bo-btn{
       padding:18px 10px;border-radius:var(--radius);font-size:1.4rem;font-weight:900;
@@ -313,7 +313,7 @@
       touch-action:none;
     }
     .bo-btn:active,.bo-btn.held{background:rgba(255,215,0,.18);border-color:rgba(255,215,0,.5);transform:scale(.93)}
-    .bo-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:12px;background:rgba(0,0,0,.82);backdrop-filter:blur(4px)}
+    .bo-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:12px;background:rgba(0,0,0,.88);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2}
     .bo-canvas-wrap{position:relative;width:100%;max-width:400px}
     .bo-msg{font-size:1.5rem;font-weight:900;color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,.6);text-align:center;letter-spacing:.04em}
     .bo-sub{font-size:.82rem;color:rgba(255,255,255,.55);letter-spacing:.08em;text-align:center}
@@ -322,6 +322,15 @@
       background:linear-gradient(135deg,rgba(200,150,0,.85),rgba(255,215,0,.9));
       color:#1a1200;border:1px solid rgba(255,215,0,.45);font-size:.9rem;font-weight:800;
       letter-spacing:.1em;cursor:pointer;box-shadow:var(--glow-gold);
+    }
+
+
+    @media (max-height:700px){
+      #screen-bo .title{font-size:1.35rem !important;margin:8px 0 2px !important}
+      #screen-bo{padding-bottom:8px}
+      .bo-controls{margin-top:2px}
+      .bo-btn{padding:14px 10px;font-size:1.2rem}
+      #app{padding-top:10px;padding-bottom:20px}
     }
 
     /* ── Mute Button ── */
@@ -587,6 +596,7 @@
       <div class="bo-wrap">
         <div class="bo-hud">
           <div>SCORE <span id="bo-score">0</span></div>
+          <div>LEVEL <span id="bo-level">1</span></div>
           <div>LIVES <span id="bo-lives">❤️❤️❤️</span></div>
         </div>
         <div class="bo-canvas-wrap">
@@ -1667,22 +1677,8 @@
       showMain();
     }
 
-    (function handleInviteLink(){
-      try{
-        const q=new URLSearchParams(location.search);
-        const room=(q.get('room')||'').toUpperCase();
-        const g=(q.get('game')||'').toLowerCase();
-        if(!room) return;
-        if(g==='ttt'||g==='tictactoe'){
-          showTTTJoin();
-          document.getElementById('ttt-join-code').value=room;
-        } else {
-          showMPJoin();
-          document.getElementById('mp-join-code').value=room;
-        }
-        history.replaceState({},'',location.pathname);
-      }catch(e){}
-    })();
+    // Deep-link handler moved to end of script (after showBO/showSI lets)
+    // so Telegram ?game=breakout does not hit TDZ on boCtx/siCtx.
 
     // ── SPACE INVADERS ──────────────────────────────────────────────────────
     const SI_W=400, SI_H=320;
@@ -1915,7 +1911,7 @@
     // ── BREAKOUT ─────────────────────────────────────────────────────────────
     const BO_W=400, BO_H=520;
     let boCtx=null, boRAF=null, boRunning=false, boOver=false;
-    let boScore=0, boLives=3;
+    let boScore=0, boLives=3, boLevel=1;
     let boPaddle, boBall, boBricks;
     let boKeys={left:false,right:false};
     let boPointerX=null;
@@ -1938,16 +1934,24 @@
     function showBO(){
       showScreen('screen-bo');
       const canvas=document.getElementById('bo-canvas');
+      if(!canvas) return;
+      // Re-acquire every open — Telegram WebView deep-links can race; keep ctx valid.
       boCtx=canvas.getContext('2d');
       boLoadImages();
       boBindPointer(canvas);
       boDrawIdle();
       const ol=document.getElementById('bo-overlay');
-      ol.style.display='flex';
-      document.getElementById('bo-msg').textContent='BREAKOUT';
-      document.getElementById('bo-sub').textContent='Smash the devil bricks with the Saints ball';
-      document.getElementById('bo-start-btn').style.display='block';
-      document.getElementById('bo-start-btn').textContent='▶ START';
+      if(ol) ol.style.display='flex';
+      const msg=document.getElementById('bo-msg');
+      const sub=document.getElementById('bo-sub');
+      const btn=document.getElementById('bo-start-btn');
+      if(msg) msg.textContent='BREAKOUT';
+      if(sub) sub.textContent='Smash the devil bricks with the Saints ball';
+      if(btn){ btn.style.display='block'; btn.textContent='▶ START'; }
+      // Nudge layout after TG visualViewport settles
+      try{
+        requestAnimationFrame(()=>{ boDrawIdle(); });
+      }catch(e){}
     }
 
     function boBindPointer(canvas){
@@ -1999,8 +2003,11 @@
     }
 
     function boStart(){
+      const canvas=document.getElementById('bo-canvas');
+      if(canvas && !boCtx) boCtx=canvas.getContext('2d');
+      if(!boCtx){ showToast('Canvas failed — reopen Breakout'); return; }
       document.getElementById('bo-overlay').style.display='none';
-      boScore=0; boLives=3; boOver=false; boWaitingServe=false;
+      boScore=0; boLives=3; boLevel=1; boOver=false; boWaitingServe=false;
       boInitLevel();
       boUpdateHUD();
       if(boRAF) cancelAnimationFrame(boRAF);
@@ -2029,7 +2036,8 @@
       if(!boBall.stuck) return;
       boBall.stuck=false;
       const angle=(-Math.PI/2)+(Math.random()*0.6-0.3);
-      const speed=4.2;
+      // Each cleared level starts a little faster, capped for playability.
+      const speed=boBaseBallSpeed();
       boBall.vx=Math.cos(angle)*speed;
       boBall.vy=Math.sin(angle)*speed;
       if(Math.abs(boBall.vy)<2.5) boBall.vy=-3.2;
@@ -2113,8 +2121,19 @@
       }
 
       if(!boBricks.some(b=>b.alive)){
-        boGameOver(true);
+        boAdvanceLevel();
       }
+    }
+
+    function boBaseBallSpeed(){
+      return Math.min(7.2, 4.2 + (boLevel-1)*0.45);
+    }
+
+    function boAdvanceLevel(){
+      boLevel++;
+      boInitLevel();
+      boUpdateHUD();
+      showToast('Level '+boLevel+'! Speed '+boBaseBallSpeed().toFixed(1));
     }
 
     function boCircleRect(ball, rect){
@@ -2198,6 +2217,7 @@
 
     function boUpdateHUD(){
       document.getElementById('bo-score').textContent=boScore;
+      document.getElementById('bo-level').textContent=boLevel;
       document.getElementById('bo-lives').textContent='❤️'.repeat(Math.max(0,boLives));
     }
 
@@ -2233,6 +2253,43 @@
       const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
       setTimeout(()=>t.classList.remove('show'),2000);
     }
+
+    // ── Deep links (must run AFTER showBO/showSI + their let bindings) ─────
+    // Telegram in-app browser opens ?game=breakout; calling showBO earlier
+    // hit TDZ on `let boCtx` → silent catch → black canvas on START.
+    function handleInviteLink(){
+      try{
+        const q=new URLSearchParams(location.search);
+        const room=(q.get('room')||'').toUpperCase();
+        const g=(q.get('game')||'').toLowerCase();
+        if(!room && (g==='breakout'||g==='bo')){
+          showBO();
+          history.replaceState({},'',location.pathname);
+          return;
+        }
+        if(!room && (g==='invaders'||g==='si'||g==='spaceinvaders')){
+          showSI();
+          history.replaceState({},'',location.pathname);
+          return;
+        }
+        if(!room) return;
+        if(g==='ttt'||g==='tictactoe'){
+          showTTTJoin();
+          document.getElementById('ttt-join-code').value=room;
+        } else {
+          showMPJoin();
+          document.getElementById('mp-join-code').value=room;
+        }
+        history.replaceState({},'',location.pathname);
+      }catch(e){ console.warn('invite link', e); }
+    }
+    // Defer one tick so TG WebView layout/visualViewport is ready
+    if(document.readyState==='loading'){
+      document.addEventListener('DOMContentLoaded', ()=>setTimeout(handleInviteLink,0));
+    } else {
+      setTimeout(handleInviteLink,0);
+    }
+
   </script>
 </body>
 </html>
