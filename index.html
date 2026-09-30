@@ -333,6 +333,50 @@
       #app{padding-top:10px;padding-bottom:20px}
     }
 
+
+    .btn-sunset{
+      background:linear-gradient(135deg,rgba(255,100,40,.88),rgba(255,180,40,.92));
+      color:#1a0a00;border-color:rgba(255,160,60,.5);
+      box-shadow:0 0 22px rgba(255,120,40,.35),inset 0 1px 0 rgba(255,255,255,.25);
+    }
+    .btn-sunset:hover{filter:brightness(1.1)}
+
+    /* ── Mini Ramp Skate ── */
+    #screen-sk{background:transparent}
+    .sk-wrap{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:8px}
+    .sk-hud{display:flex;justify-content:space-between;width:100%;max-width:400px;font-size:.78rem;font-weight:800;letter-spacing:.06em;color:rgba(255,255,255,.7);padding:0 4px;flex-wrap:wrap;gap:4px}
+    .sk-hud span{color:#ffb347;text-shadow:0 0 8px rgba(255,140,40,.55)}
+    #sk-canvas{border:1px solid rgba(255,140,60,.35);border-radius:12px;background:#1a0a08;display:block;width:100%;max-width:100%;height:auto;box-shadow:0 0 24px rgba(255,100,40,.15);touch-action:none;cursor:pointer;-webkit-user-select:none;user-select:none}
+    .sk-controls{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;width:100%;max-width:360px;margin-top:6px}
+    .sk-btn{
+      padding:14px 6px;border-radius:var(--radius);font-size:.95rem;font-weight:900;
+      background:var(--glass);border:1px solid var(--glass-border);color:#fff;
+      backdrop-filter:blur(12px);cursor:pointer;user-select:none;
+      box-shadow:0 4px 16px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.1);
+      transition:transform .1s,background .1s;-webkit-tap-highlight-color:transparent;
+      touch-action:none;line-height:1.15;
+    }
+    .sk-btn small{display:block;font-size:.62rem;font-weight:700;opacity:.7;letter-spacing:.04em}
+    .sk-btn:active,.sk-btn.held{background:rgba(255,140,40,.22);border-color:rgba(255,160,60,.55);transform:scale(.93)}
+    .sk-btn-trick{background:rgba(255,80,40,.22);border-color:rgba(255,120,60,.4)}
+    .sk-btn-trick:active,.sk-btn-trick.held{background:rgba(255,100,50,.4)}
+    .sk-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:12px;background:rgba(0,0,0,.86);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2;padding:16px}
+    .sk-canvas-wrap{position:relative;width:100%;max-width:400px}
+    .sk-msg{font-size:1.45rem;font-weight:900;color:#ffb347;text-shadow:0 0 20px rgba(255,140,40,.6);text-align:center;letter-spacing:.04em}
+    .sk-sub{font-size:.78rem;color:rgba(255,255,255,.55);letter-spacing:.06em;text-align:center;max-width:280px;line-height:1.35}
+    .sk-start-btn{
+      padding:12px 32px;border-radius:var(--radius-pill);
+      background:linear-gradient(135deg,rgba(255,100,40,.9),rgba(255,180,40,.95));
+      color:#1a0a00;border:1px solid rgba(255,160,60,.5);font-size:.9rem;font-weight:800;
+      letter-spacing:.1em;cursor:pointer;box-shadow:0 0 22px rgba(255,120,40,.4);
+    }
+    @media (max-height:700px){
+      #screen-sk .title{font-size:1.35rem !important;margin:8px 0 2px !important}
+      #screen-sk{padding-bottom:8px}
+      .sk-controls{margin-top:2px}
+      .sk-btn{padding:11px 4px;font-size:.85rem}
+    }
+
     /* ── Mute Button ── */
     #mute-btn{
       position:fixed;bottom:28px;right:22px;z-index:999;
@@ -360,6 +404,7 @@
       <button class="btn btn-orange" onclick="showTTT()">⭕ Tic Tac Toe</button>
       <button class="btn btn-blue" onclick="showSI()">👾 Space Invaders</button>
       <button class="btn btn-gold" onclick="showBO()">🛹 Breakout</button>
+      <button class="btn btn-sunset" onclick="showSK()">🛹 Skate</button>
     </div>
 
     <div id="screen-cats" class="screen">
@@ -613,6 +658,51 @@
         </div>
       </div>
       <button class="back-btn" onclick="boQuit()">← Quit</button>
+    </div>
+
+
+    <!-- Mini Ramp Skate -->
+    <div id="screen-sk" class="screen">
+      <h1 class="title" style="font-size:1.9rem;margin-bottom:4px">🛹 Skate</h1>
+      <div class="sk-wrap">
+        <div class="sk-hud">
+          <div>SCORE <span id="sk-score">0</span></div>
+          <div>COMBO <span id="sk-combo">x1</span></div>
+          <div>BEST <span id="sk-best">0</span></div>
+          <div>LIVES <span id="sk-lives">❤️❤️❤️</span></div>
+        </div>
+        <div class="sk-canvas-wrap">
+          <canvas id="sk-canvas" width="400" height="340"></canvas>
+          <div class="sk-overlay" id="sk-overlay">
+            <div class="sk-msg" id="sk-msg">SAINTS RAMP</div>
+            <div class="sk-sub" id="sk-sub">Pump the transitions · Ollie the lip · Flip · Grab · Grind the coping</div>
+            <button class="sk-start-btn" id="sk-start-btn" onclick="skStart()">▶ START</button>
+          </div>
+        </div>
+        <div class="sk-controls">
+          <button class="sk-btn" id="sk-left"
+            ontouchstart="skHold('left',true);event.preventDefault()" ontouchend="skHold('left',false)"
+            onmousedown="skHold('left',true)" onmouseup="skHold('left',false)" onmouseleave="skHold('left',false)">◀<small>LEAN</small></button>
+          <button class="sk-btn" id="sk-pump"
+            ontouchstart="skHold('pump',true);event.preventDefault()" ontouchend="skHold('pump',false)"
+            onmousedown="skHold('pump',true)" onmouseup="skHold('pump',false)" onmouseleave="skHold('pump',false)">↑<small>PUMP / OLLIE</small></button>
+          <button class="sk-btn sk-btn-trick" id="sk-flip"
+            ontouchstart="skTrick('flip');event.preventDefault()" ontouchend="skHold('flip',false)"
+            onmousedown="skTrick('flip')" onmouseup="skHold('flip',false)">🔃<small>FLIP</small></button>
+          <button class="sk-btn" id="sk-right"
+            ontouchstart="skHold('right',true);event.preventDefault()" ontouchend="skHold('right',false)"
+            onmousedown="skHold('right',true)" onmouseup="skHold('right',false)" onmouseleave="skHold('right',false)">▶<small>LEAN</small></button>
+        </div>
+        <div class="sk-controls" style="grid-template-columns:1fr 1fr;max-width:280px">
+          <button class="sk-btn sk-btn-trick" id="sk-grab"
+            ontouchstart="skHold('grab',true);event.preventDefault()" ontouchend="skHold('grab',false)"
+            onmousedown="skHold('grab',true)" onmouseup="skHold('grab',false)" onmouseleave="skHold('grab',false)">✊<small>GRAB</small></button>
+          <button class="sk-btn sk-btn-trick" id="sk-grind"
+            ontouchstart="skHold('grind',true);event.preventDefault()" ontouchend="skHold('grind',false)"
+            onmousedown="skHold('grind',true)" onmouseup="skHold('grind',false)" onmouseleave="skHold('grind',false)">➖<small>GRIND</small></button>
+        </div>
+      </div>
+      <button class="back-btn" onclick="skQuit()">← Quit</button>
     </div>
 
     <div class="confetti-container" id="confetti-container"></div>
@@ -1677,7 +1767,7 @@
       showMain();
     }
 
-    // Deep-link handler moved to end of script (after showBO/showSI lets)
+    // Deep-link handler moved to end of script (after showBO/showSI/showSK lets)
     // so Telegram ?game=breakout does not hit TDZ on boCtx/siCtx.
 
     // ── SPACE INVADERS ──────────────────────────────────────────────────────
@@ -2249,6 +2339,693 @@
     },{passive:true});
 
 
+
+    // ── MINI RAMP SKATE ──────────────────────────────────────────────────────
+    const SK_W=400, SK_H=340;
+    let skCtx=null, skRAF=null, skRunning=false, skOver=false;
+    let skScore=0, skLives=3, skCombo=1, skBest=0;
+    try{ skBest=parseInt(localStorage.getItem('hm_skate_best')||'0',10)||0; }catch(e){}
+    let skKeys={left:false,right:false,pump:false,grab:false,grind:false,flip:false};
+    let skImgs={bg:null,skater:null,board:null,ready:false,_loading:false};
+    let skPath=[]; // samples: {x,y,ang,s,dist}
+    let skPathLen=0;
+    let skPlayer=null;
+    let skFx=[]; // floating trick labels
+    let skPumpCool=0, skTrickLock=0;
+    let skMsgTimer=0;
+
+    function skLoadImages(){
+      if(skImgs._loading) return;
+      skImgs._loading=true;
+      const names={bg:'assets/skate-ramp-bg.jpg',skater:'assets/skate-skater.png',board:'assets/skate-board.png'};
+      let left=3;
+      for(const k of Object.keys(names)){
+        const img=new Image();
+        img.onload=()=>{skImgs[k]=img; if(--left===0){skImgs.ready=true; if(!skRunning) skDrawIdle();}};
+        img.onerror=()=>{console.warn('SK asset fail',names[k]); if(--left===0){skImgs.ready=true;}};
+        img.src=names[k];
+      }
+    }
+
+    function skBuildPath(){
+      // U halfpipe in canvas space. Left lip → left trans → flat → right trans → right lip
+      const samples=[];
+      const lipY=88, bottomY=292, cxL=118, cxR=282, r=bottomY-lipY; // r≈204 but clipped
+      // Use tighter radius that fits: left wall center, right wall center
+      const R=88;
+      const leftLipX=40, rightLipX=360;
+      const flatY=286;
+      const leftFlatX=leftLipX+R;  // where left quarter meets flat
+      const rightFlatX=rightLipX-R;
+      // Left lip down: angle from -PI/2 (up) sweeping to 0 (rightward at bottom)
+      // Point on left quarter: center (leftFlatX, lipY), angle from PI (left/up-ish) ...
+      // Left transition: center at (leftLipX+R, lipY), angle π → π/2 (from left lip down to flat)
+      const leftC={x:leftLipX+R, y:lipY};
+      const rightC={x:rightLipX-R, y:lipY};
+      const N=48;
+      // left transition: θ = π → π/2
+      for(let i=0;i<=N;i++){
+        const t=i/N;
+        const th=Math.PI - t*(Math.PI/2);
+        samples.push({x:leftC.x + R*Math.cos(th), y:leftC.y + R*Math.sin(th), ang:th+Math.PI/2});
+      }
+      // flat
+      const flatN=40;
+      for(let i=1;i<=flatN;i++){
+        const t=i/flatN;
+        const x=leftFlatX + t*(rightFlatX-leftFlatX);
+        samples.push({x, y:flatY, ang:0});
+      }
+      // right transition: θ = π/2 → 0
+      for(let i=1;i<=N;i++){
+        const t=i/N;
+        const th=Math.PI/2 - t*(Math.PI/2);
+        samples.push({x:rightC.x + R*Math.cos(th), y:rightC.y + R*Math.sin(th), ang:th-Math.PI/2});
+      }
+      // cumulative distance + normalize s in [0,1]
+      let dist=0;
+      samples[0].dist=0;
+      for(let i=1;i<samples.length;i++){
+        const dx=samples[i].x-samples[i-1].x, dy=samples[i].y-samples[i-1].y;
+        dist+=Math.hypot(dx,dy);
+        samples[i].dist=dist;
+      }
+      skPathLen=dist||1;
+      for(const p of samples) p.s=p.dist/skPathLen;
+      skPath=samples;
+      skComputeZones();
+    }
+
+    function skPathAt(s){
+      s=Math.max(0,Math.min(1,s));
+      const target=s*skPathLen;
+      // binary-ish scan
+      let lo=0, hi=skPath.length-1;
+      while(lo<hi-1){
+        const mid=(lo+hi)>>1;
+        if(skPath[mid].dist<target) lo=mid; else hi=mid;
+      }
+      const a=skPath[lo], b=skPath[hi];
+      const span=(b.dist-a.dist)||1;
+      const t=(target-a.dist)/span;
+      let ang=a.ang + (b.ang-a.ang)*t;
+      // unwrap-ish not needed for our range
+      return {x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, ang, s};
+    }
+
+    let skFlatMin=0.39, skFlatMax=0.61;
+    function skComputeZones(){
+      let lo=1, hi=0;
+      const midY = skPath.length ? skPath[Math.floor(skPath.length/2)].y : 286;
+      for(const pt of skPath){
+        if(Math.abs(pt.y - midY) < 3){ lo=Math.min(lo,pt.s); hi=Math.max(hi,pt.s); }
+      }
+      if(hi>lo){ skFlatMin=lo; skFlatMax=hi; }
+    }
+    function skNearLip(s){
+      return s < 0.12 || s > 0.88;
+    }
+    function skOnFlat(s){
+      return s >= skFlatMin && s <= skFlatMax;
+    }
+    function skOnTransition(s){
+      return (!skOnFlat(s) && !skNearLip(s)) || (s>=0.12 && s<skFlatMin) || (s>skFlatMax && s<=0.88);
+    }
+
+    function showSK(){
+      showScreen('screen-sk');
+      const canvas=document.getElementById('sk-canvas');
+      if(!canvas) return;
+      skCtx=canvas.getContext('2d');
+      skBuildPath();
+      skLoadImages();
+      skDrawIdle();
+      const ol=document.getElementById('sk-overlay');
+      if(ol) ol.style.display='flex';
+      const msg=document.getElementById('sk-msg');
+      const sub=document.getElementById('sk-sub');
+      const btn=document.getElementById('sk-start-btn');
+      if(msg) msg.textContent='SAINTS RAMP';
+      if(sub) sub.textContent='Pump the transitions · Ollie the lip · Flip · Grab · Grind the coping';
+      if(btn){ btn.style.display='block'; btn.textContent='▶ START'; }
+      skUpdateHUD();
+      try{ requestAnimationFrame(()=>skDrawIdle()); }catch(e){}
+    }
+
+    function skDrawIdle(){
+      if(!skCtx) return;
+      const c=skCtx;
+      if(skImgs.bg){
+        // cover crop
+        const img=skImgs.bg;
+        const scale=Math.max(SK_W/img.width, SK_H/img.height);
+        const dw=img.width*scale, dh=img.height*scale;
+        c.drawImage(img, (SK_W-dw)/2, (SK_H-dh)/2, dw, dh);
+        c.fillStyle='rgba(0,0,0,0.25)';
+        c.fillRect(0,0,SK_W,SK_H);
+      } else {
+        c.fillStyle='#1a0a08'; c.fillRect(0,0,SK_W,SK_H);
+      }
+      // faint path
+      if(skPath.length){
+        c.strokeStyle='rgba(255,180,80,0.25)';
+        c.lineWidth=3;
+        c.beginPath();
+        c.moveTo(skPath[0].x, skPath[0].y);
+        for(let i=1;i<skPath.length;i++) c.lineTo(skPath[i].x, skPath[i].y);
+        c.stroke();
+      }
+      // preview skater at bottom
+      const p=skPathAt(0.5);
+      skDrawRider(c, p.x, p.y-2, 0, 1, 0, false);
+    }
+
+    function skStart(){
+      const canvas=document.getElementById('sk-canvas');
+      if(canvas && !skCtx) skCtx=canvas.getContext('2d');
+      if(!skCtx){ showToast('Canvas failed — reopen Skate'); return; }
+      if(!skPath.length) skBuildPath();
+      document.getElementById('sk-overlay').style.display='none';
+      skScore=0; skLives=3; skCombo=1; skOver=false; skFx=[];
+      skPumpCool=0; skTrickLock=0;
+      skPlayer={
+        s:0.5, v:1.8, // path param + signed speed (positive → right)
+        air:false, x:0, y:0, vx:0, vy:0, rot:0, spin:0,
+        facing:1,
+        trick:null, trickT:0, grind:false, grindSide:0,
+        pumped:false, ollied:false, grabbed:false, flipped:false,
+        boardAngle:0, bail:false, bailT:0,
+        lastS:0.5
+      };
+      const p=skPathAt(skPlayer.s);
+      skPlayer.x=p.x; skPlayer.y=p.y; skPlayer.boardAngle=p.ang;
+      skUpdateHUD();
+      if(skRAF) cancelAnimationFrame(skRAF);
+      skRunning=true;
+      skLoop();
+    }
+
+    function skLoop(){
+      if(!skRunning) return;
+      skUpdate();
+      skDraw();
+      skRAF=requestAnimationFrame(skLoop);
+    }
+
+    function skAddScore(base, label){
+      const pts=Math.round(base*skCombo);
+      skScore+=pts;
+      skCombo=Math.min(8, skCombo+0.5);
+      skFx.push({x:skPlayer.x, y:skPlayer.y-40, text:(label||'')+' +'+pts, life:1});
+      if(skScore>skBest){
+        skBest=skScore;
+        try{ localStorage.setItem('hm_skate_best', String(skBest)); }catch(e){}
+      }
+      skUpdateHUD();
+    }
+
+    function skBreakCombo(){
+      skCombo=1;
+      skUpdateHUD();
+    }
+
+    function skFloat(text, color){
+      skFx.push({x:skPlayer.x, y:skPlayer.y-50, text, life:1.1, color:color||'#ffb347'});
+    }
+
+    function skUpdate(){
+      const p=skPlayer;
+      if(!p) return;
+      if(p.bail){
+        p.bailT+=1/60;
+        p.vy+=0.28;
+        p.x+=p.vx; p.y+=p.vy;
+        p.rot+=p.spin;
+        if(p.bailT>1.2){
+          skLives--;
+          skUpdateHUD();
+          skBreakCombo();
+          if(skLives<=0){ skGameOver(); return; }
+          // reset to flat
+          p.bail=false; p.bailT=0; p.air=false; p.grind=false;
+          p.s=0.5; p.v=0; p.spin=0; p.rot=0; p.trick=null;
+          p.ollied=false; p.flipped=false; p.grabbed=false; p.pumped=false;
+          const q=skPathAt(p.s);
+          p.x=q.x; p.y=q.y; p.boardAngle=q.ang;
+          skFloat('BAIL…', '#ff6b6b');
+        }
+        // fx decay
+        skFx=skFx.filter(f=>{f.life-=0.02; f.y-=0.6; return f.life>0;});
+        return;
+      }
+
+      if(skPumpCool>0) skPumpCool--;
+      if(skTrickLock>0) skTrickLock--;
+
+      if(p.grind){
+        // grind along coping
+        const side=p.grindSide; // -1 left, +1 right
+        const targetS=side<0 ? 0.02 : 0.98;
+        p.s += (side*0.0015 + Math.sign(p.v||side)*0.0022);
+        // keep near lip
+        if(side<0) p.s=Math.max(0.005, Math.min(0.06, p.s));
+        else p.s=Math.max(0.94, Math.min(0.995, p.s));
+        const q=skPathAt(p.s);
+        p.x=q.x; p.y=q.y-6; p.boardAngle=side<0 ? -0.15 : 0.15;
+        p.rot=p.boardAngle;
+        // trickle score without exploding combo
+        skScore += 2;
+        if(skScore>skBest){ skBest=skScore; try{localStorage.setItem('hm_skate_best',String(skBest));}catch(e){} }
+        if(skScore%60===0){ skFloat('GRIND', '#ffe066'); skUpdateHUD(); }
+        else if(skScore%10===0) skUpdateHUD();
+        // drop off grind
+        if(!skKeys.grind || Math.random()<0.002){
+          // exit to air or drop in
+          p.grind=false;
+          if(skKeys.pump){
+            p.air=true; p.vy=-4.5; p.vx=side*1.2; p.ollied=true;
+            skAddScore(80, 'OLLIE OUT');
+          } else {
+            // drop in
+            p.air=false;
+            p.v = side * 2.8;
+            p.s = side<0 ? 0.05 : 0.95;
+          }
+        }
+        // lean extends grind / steers
+        if(skKeys.left) p.s-=0.001;
+        if(skKeys.right) p.s+=0.001;
+        skFx=skFx.filter(f=>{f.life-=0.02; f.y-=0.6; return f.life>0;});
+        return;
+      }
+
+      if(!p.air){
+        // grounded on ramp
+        // gravity along slope: a = g * sin(slope)
+        const q=skPathAt(p.s);
+        const slope=q.ang; // approx board angle
+        // Positive v moves toward increasing s (right)
+        // Conserved energy on ramp: E ≈ v²/2 + g*heightAboveFlat
+        const bottomY=286, G=0.09;
+        const hhNow=Math.max(0, bottomY - skPathAt(p.s).y);
+        let E = 0.5*p.v*p.v + G*hhNow;
+
+        if(skKeys.left){ E += 0.18; if(Math.abs(p.v)<0.35) p.facing=-1; }
+        if(skKeys.right){ E += 0.18; if(Math.abs(p.v)<0.35) p.facing=1; }
+
+        if(skKeys.pump && skPumpCool<=0){
+          let add=0;
+          if(skOnTransition(p.s)) add=20;
+          else if(skOnFlat(p.s)) add=11;
+          else add=13;
+          E += add;
+          skPumpCool = skOnTransition(p.s) ? 8 : 14;
+          p.pumped=true;
+          skFloat('PUMP', '#7dffb3');
+          if(skNearLip(p.s) && E > 22){
+            const spd=Math.sqrt(Math.max(0, 2*(E - G*hhNow)));
+            p.v = (p.v>=0 || skKeys.right ? 1 : -1) * Math.max(2.2, spd);
+            if(skKeys.left) p.v=-Math.abs(p.v);
+            skLaunch();
+            skPumpCool=16;
+          }
+        }
+
+        E *= 0.9992;
+        E = Math.min(80, E);
+
+        {
+          const hh=Math.max(0, bottomY - skPathAt(p.s).y);
+          const kinetic=Math.max(0, E - G*hh);
+          let spd=Math.sqrt(2*kinetic);
+          let sign=Math.sign(p.v);
+          if(Math.abs(p.v)<0.3){
+            if(skKeys.right) sign=1;
+            else if(skKeys.left) sign=-1;
+            else sign=p.facing||1;
+          }
+          if(!sign) sign=1;
+          p.v = sign * Math.min(10, spd);
+        }
+
+        if(skNearLip(p.s) && E>24 && Math.abs(p.v)>2.2){
+          skLaunch();
+        }
+
+        p.s += (p.v / skPathLen);
+        p.facing = p.v>=0 ? 1 : -1;
+
+        // Hit lip without enough speed → reverse
+        if(p.s<=0){
+          p.s=0.001;
+          if(Math.abs(p.v)<2.4){ p.v = Math.max(1.2, Math.abs(p.v)*0.85); }
+          else { skLaunch(); }
+        }
+        if(p.s>=1){
+          p.s=0.999;
+          if(Math.abs(p.v)<2.4){ p.v = -Math.max(1.2, Math.abs(p.v)*0.85); }
+          else { skLaunch(); }
+        }
+
+        // Try start grind at coping
+        if(skKeys.grind && skNearLip(p.s) && Math.abs(p.v)>0.7){
+          p.grind=true;
+          p.grindSide = p.s<0.5 ? -1 : 1;
+          p.v *= 0.3;
+          skAddScore(120, 'CROOKED GRIND');
+        }
+
+        const qq=skPathAt(p.s);
+        p.x=qq.x; p.y=qq.y; p.boardAngle=qq.ang; p.rot=qq.ang;
+        p.lastS=p.s;
+
+        // Reset air tricks when rolling flats
+        if(skOnFlat(p.s)){
+          p.ollied=false; p.flipped=false; p.grabbed=false;
+        }
+      } else {
+        // airborne
+        p.vy += 0.22; // gravity
+        p.x += p.vx;
+        p.y += p.vy;
+        // rotate with lean
+        if(skKeys.left) p.spin -= 0.004;
+        if(skKeys.right) p.spin += 0.004;
+        p.spin *= 0.98;
+        p.rot += p.spin;
+        p.boardAngle = p.rot;
+
+        // Grab
+        if(skKeys.grab && !p.grabbed && p.trick!=='flip'){
+          p.grabbed=true;
+          p.trick='grab';
+          p.trickT=25;
+          skAddScore(100, 'INDY GRAB');
+        }
+
+        // Flip (kickflip / heelflip by lean)
+        if((skKeys.flip || false) && !p.flipped && skTrickLock<=0){
+          skDoFlip();
+        }
+
+        // Landing detection: near path and falling
+        if(p.vy>0){
+          const hit=skFindLanding(p.x, p.y);
+          if(hit && hit.dist<14){
+            skLand(hit);
+          }
+        }
+
+        // Fell off world
+        if(p.y>SK_H+40 || p.x<-60 || p.x>SK_W+60){
+          skDoBail('OUT OF BOUNDS');
+        }
+      }
+
+      if(p.trickT>0) p.trickT--;
+      else if(p.trick==='flip' && p.air) { /* keep spinning until land */ }
+      else if(!p.air) p.trick=null;
+
+      skFx=skFx.filter(f=>{f.life-=0.02; f.y-=0.6; return f.life>0;});
+    }
+
+    function skLaunch(){
+      const p=skPlayer;
+      if(p.air||p.bail||p.grind) return;
+      const q=skPathAt(p.s);
+      p.air=true;
+      p.ollied=true;
+      // Launch velocity from path speed + upward
+      const speed=p.v * 0.55;
+      // tangent from angle
+      const tangX=Math.cos(q.ang), tangY=Math.sin(q.ang);
+      // outward normal (up away from ramp)
+      // For U ramp, normal points inward-up roughly -perpendicular
+      let nx=-Math.sin(q.ang), ny=Math.cos(q.ang);
+      // ensure normal points "up" (negative y in canvas = up... wait canvas y down)
+      // We want launch away from concrete = toward sky = decreasing y
+      if(ny>0){ nx=-nx; ny=-ny; }
+      const boost=3.2 + Math.min(4.2, Math.abs(p.v)*0.42);
+      p.vx = tangX*speed + nx*boost*0.2;
+      p.vy = tangY*speed + ny*boost;
+      if(p.vy > -2.2) p.vy = -2.8 - Math.abs(p.v)*0.18;
+      p.spin = p.v * 0.01;
+      p.x=q.x; p.y=q.y-4;
+      skAddScore(50, 'OLLIE');
+      p.v=0;
+    }
+
+    function skDoFlip(){
+      const p=skPlayer;
+      if(!p.air || p.flipped) return;
+      p.flipped=true;
+      p.trick='flip';
+      p.trickT=40;
+      skTrickLock=20;
+      const heel = skKeys.left || (!skKeys.right && p.facing<0);
+      if(heel){
+        p.spin -= 0.22;
+        skAddScore(150, 'HEELFLIP');
+      } else {
+        p.spin += 0.22;
+        skAddScore(150, 'KICKFLIP');
+      }
+    }
+
+    function skTrick(kind){
+      if(!skRunning||skOver||!skPlayer) return;
+      if(kind==='flip'){
+        skKeys.flip=true;
+        if(skPlayer.air) skDoFlip();
+        setTimeout(()=>{skKeys.flip=false;},120);
+      }
+    }
+
+    function skFindLanding(x,y){
+      // nearest path point
+      let best=null, bestD=1e9;
+      for(let i=0;i<skPath.length;i+=2){
+        const pt=skPath[i];
+        const d=Math.hypot(pt.x-x, pt.y-y);
+        if(d<bestD){ bestD=d; best={x:pt.x,y:pt.y,ang:pt.ang,s:pt.s,dist:d}; }
+      }
+      return best;
+    }
+
+    function skLand(hit){
+      const p=skPlayer;
+      // Board angle vs surface — bail if too tilted
+      let diff=p.rot - hit.ang;
+      while(diff>Math.PI) diff-=Math.PI*2;
+      while(diff<-Math.PI) diff+=Math.PI*2;
+      const upside = Math.abs(diff) > 1.15; // ~66deg
+      // Still flipping mid-trick poorly
+      const midFlip = p.trick==='flip' && p.trickT>8;
+      if(upside || midFlip){
+        skDoBail(midFlip?'LANDING PRIMO':'WHEELBITE');
+        return;
+      }
+      // Successful land
+      p.air=false;
+      p.s=hit.s;
+      p.x=hit.x; p.y=hit.y;
+      p.boardAngle=hit.ang;
+      p.rot=hit.ang;
+      p.spin=0;
+      // Convert air vx into path speed
+      p.v = (p.facing||1) * Math.max(1.2, Math.min(6, Math.hypot(p.vx,p.vy)*0.55));
+      // Direction from approach
+      if(p.vx < -0.4) p.v = -Math.abs(p.v);
+      if(p.vx > 0.4) p.v = Math.abs(p.v);
+      p.vx=0; p.vy=0;
+      p.trick=null; p.trickT=0;
+      skAddScore(40, 'LAND');
+      // Grind catch on coping land
+      if(skKeys.grind && skNearLip(hit.s)){
+        p.grind=true;
+        p.grindSide = hit.s<0.5 ? -1 : 1;
+        skAddScore(100, 'LIP GRIND');
+      }
+    }
+
+    function skDoBail(reason){
+      const p=skPlayer;
+      if(p.bail) return;
+      p.bail=true; p.bailT=0; p.air=true; p.grind=false;
+      p.vy=1.5; p.vx=(Math.random()-0.5)*2; p.spin=(Math.random()-0.5)*0.3;
+      skBreakCombo();
+      skFloat(reason||'BAIL', '#ff6b6b');
+      showToast(reason||'Bail!');
+    }
+
+    function skDrawRider(c, x, y, ang, facing, spinExtra, grabbing){
+      c.save();
+      c.translate(x, y);
+      c.rotate(ang + (spinExtra||0));
+      // board under feet
+      const bw=54, bh=10;
+      if(skImgs.board){
+        c.drawImage(skImgs.board, -bw/2, -2, bw, bh);
+      } else {
+        c.fillStyle='#222'; c.fillRect(-bw/2,0,bw,6);
+        c.fillStyle='#a55eea'; c.beginPath(); c.arc(-bw/2+8,8,4,0,Math.PI*2); c.fill();
+        c.beginPath(); c.arc(bw/2-8,8,4,0,Math.PI*2); c.fill();
+      }
+      // skater upright-ish relative to board (slight crouch)
+      const sh=56, sw=22;
+      c.scale(facing<0?-1:1, 1);
+      if(grabbing){
+        c.rotate(-0.25);
+      }
+      if(skImgs.skater){
+        c.drawImage(skImgs.skater, -sw/2, -sh+2, sw, sh);
+      } else {
+        c.fillStyle='#ffd700';
+        c.beginPath(); c.arc(0,-sh+10,8,0,Math.PI*2); c.fill();
+        c.fillStyle='#111'; c.fillRect(-8,-sh+18,16,28);
+      }
+      c.restore();
+    }
+
+    function skDraw(){
+      if(!skCtx||!skPlayer) return;
+      const c=skCtx;
+      const p=skPlayer;
+      // background
+      if(skImgs.bg){
+        const img=skImgs.bg;
+        const scale=Math.max(SK_W/img.width, SK_H/img.height);
+        const dw=img.width*scale, dh=img.height*scale;
+        c.drawImage(img, (SK_W-dw)/2, (SK_H-dh)/2 - 10, dw, dh);
+        // vignette for readability
+        c.fillStyle='rgba(0,0,0,0.18)';
+        c.fillRect(0,0,SK_W,SK_H);
+      } else {
+        c.fillStyle='#1a0a08'; c.fillRect(0,0,SK_W,SK_H);
+      }
+
+      // soft ramp guide
+      if(skPath.length){
+        c.strokeStyle='rgba(255,200,100,0.18)';
+        c.lineWidth=6; c.lineCap='round';
+        c.beginPath();
+        c.moveTo(skPath[0].x, skPath[0].y);
+        for(let i=1;i<skPath.length;i++) c.lineTo(skPath[i].x, skPath[i].y);
+        c.stroke();
+        // coping dots
+        const L=skPathAt(0.02), R=skPathAt(0.98);
+        c.fillStyle='rgba(255,220,120,0.7)';
+        c.beginPath(); c.arc(L.x,L.y-4,3,0,Math.PI*2); c.fill();
+        c.beginPath(); c.arc(R.x,R.y-4,3,0,Math.PI*2); c.fill();
+      }
+
+      // rider
+      const grabVis = p.grabbed && p.air && skKeys.grab;
+      const flipSpin = (p.trick==='flip') ? p.spin*0.5 : 0;
+      skDrawRider(c, p.x, p.y - (p.grind?2:0), p.boardAngle, p.facing, flipSpin, grabVis);
+
+      // grind sparks
+      if(p.grind){
+        c.fillStyle='#ffe066';
+        for(let i=0;i<5;i++){
+          c.fillRect(p.x-10+Math.random()*20, p.y+2+Math.random()*6, 2, 2);
+        }
+      }
+
+      // speed bar
+      const spd=Math.min(1, Math.abs(p.air?Math.hypot(p.vx,p.vy):p.v)/7.5);
+      c.fillStyle='rgba(0,0,0,0.45)';
+      c.fillRect(12, SK_H-18, 100, 8);
+      c.fillStyle=spd>0.75?'#ff6b35':'#ffb347';
+      c.fillRect(12, SK_H-18, 100*spd, 8);
+      c.fillStyle='rgba(255,255,255,0.5)';
+      c.font='700 9px system-ui,sans-serif';
+      c.fillText('SPEED', 12, SK_H-22);
+
+      // fx text
+      c.textAlign='center';
+      for(const f of skFx){
+        c.globalAlpha=Math.max(0,f.life);
+        c.fillStyle=f.color||'#ffb347';
+        c.font='900 13px system-ui,sans-serif';
+        c.fillText(f.text, f.x, f.y);
+      }
+      c.globalAlpha=1; c.textAlign='left';
+
+      if(p.bail){
+        c.fillStyle='rgba(180,0,0,0.25)';
+        c.fillRect(0,0,SK_W,SK_H);
+      }
+    }
+
+    function skGameOver(){
+      skRunning=false;
+      if(skRAF){cancelAnimationFrame(skRAF);skRAF=null;}
+      skOver=true;
+      const ol=document.getElementById('sk-overlay');
+      document.getElementById('sk-msg').textContent='SESSION OVER';
+      document.getElementById('sk-sub').textContent='Score: '+skScore+' · Best: '+skBest;
+      const btn=document.getElementById('sk-start-btn');
+      btn.textContent='▶ SKATE AGAIN'; btn.style.display='block';
+      ol.style.display='flex';
+    }
+
+    function skQuit(){
+      skRunning=false;
+      if(skRAF){cancelAnimationFrame(skRAF);skRAF=null;}
+      skKeys={left:false,right:false,pump:false,grab:false,grind:false,flip:false};
+      showMain();
+    }
+
+    function skHold(dir, on){
+      skKeys[dir]=!!on;
+      const el=document.getElementById('sk-'+dir);
+      if(el) el.classList.toggle('held', !!on);
+      if(on && dir==='pump' && skRunning && skPlayer && !skPlayer.air && !skPlayer.bail){
+        // handled in update via skKeys.pump
+      }
+      if(on && dir==='grind' && skRunning && skPlayer && skNearLip(skPlayer.s) && !skPlayer.air && !skPlayer.grind){
+        // attempt immediate grind lock in update
+      }
+    }
+
+    function skUpdateHUD(){
+      const s=document.getElementById('sk-score');
+      const c=document.getElementById('sk-combo');
+      const b=document.getElementById('sk-best');
+      const l=document.getElementById('sk-lives');
+      if(s) s.textContent=skScore;
+      if(c) c.textContent='x'+skCombo;
+      if(b) b.textContent=skBest;
+      if(l) l.textContent='❤️'.repeat(Math.max(0,skLives));
+    }
+
+    document.addEventListener('keydown',e=>{
+      const onSk=document.getElementById('screen-sk')?.classList.contains('active');
+      if(!onSk) return;
+      if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){ skHold('left',true); e.preventDefault(); }
+      if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){ skHold('right',true); e.preventDefault(); }
+      if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'||e.key===' '){
+        e.preventDefault();
+        const ol=document.getElementById('sk-overlay');
+        const olOpen=ol && ol.style.display!=='none';
+        if(olOpen && !skRunning) skStart();
+        else skHold('pump',true);
+      }
+      if(e.key==='f'||e.key==='F'||e.key==='ArrowDown'||e.key==='s'||e.key==='S'){ e.preventDefault(); skTrick('flip'); }
+      if(e.key==='g'||e.key==='G'){ skHold('grab',true); e.preventDefault(); }
+      if(e.key==='c'||e.key==='C'||e.key==='Shift'){ skHold('grind',true); e.preventDefault(); }
+    });
+    document.addEventListener('keyup',e=>{
+      if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') skHold('left',false);
+      if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') skHold('right',false);
+      if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'||e.key===' ') skHold('pump',false);
+      if(e.key==='g'||e.key==='G') skHold('grab',false);
+      if(e.key==='c'||e.key==='C'||e.key==='Shift') skHold('grind',false);
+      if(e.key==='f'||e.key==='F'||e.key==='ArrowDown'||e.key==='s'||e.key==='S') skKeys.flip=false;
+    });
+
+
     function showToast(msg){
       const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
       setTimeout(()=>t.classList.remove('show'),2000);
@@ -2269,6 +3046,11 @@
         }
         if(!room && (g==='invaders'||g==='si'||g==='spaceinvaders')){
           showSI();
+          history.replaceState({},'',location.pathname);
+          return;
+        }
+        if(!room && (g==='skate'||g==='sk'||g==='ramp'||g==='miniramp')){
+          showSK();
           history.replaceState({},'',location.pathname);
           return;
         }
