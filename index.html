@@ -343,39 +343,81 @@
 
     /* ── Mini Ramp Skate ── */
     #screen-sk{background:transparent}
-    .sk-wrap{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:8px}
-    .sk-hud{display:flex;justify-content:space-between;width:100%;max-width:400px;font-size:.78rem;font-weight:800;letter-spacing:.06em;color:rgba(255,255,255,.7);padding:0 4px;flex-wrap:wrap;gap:4px}
+    .sk-wrap{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .sk-hud{display:flex;justify-content:space-between;width:100%;max-width:400px;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:rgba(255,255,255,.7);padding:0 4px;flex-wrap:wrap;gap:4px}
     .sk-hud span{color:#ffb347;text-shadow:0 0 8px rgba(255,140,40,.55)}
     #sk-canvas{border:1px solid rgba(255,140,60,.35);border-radius:12px;background:#1a0a08;display:block;width:100%;max-width:100%;height:auto;box-shadow:0 0 24px rgba(255,100,40,.15);touch-action:none;cursor:pointer;-webkit-user-select:none;user-select:none}
-    .sk-controls{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;width:100%;max-width:360px;margin-top:6px}
-    .sk-btn{
-      padding:14px 6px;border-radius:var(--radius);font-size:.95rem;font-weight:900;
-      background:var(--glass);border:1px solid var(--glass-border);color:#fff;
-      backdrop-filter:blur(12px);cursor:pointer;user-select:none;
-      box-shadow:0 4px 16px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.1);
-      transition:transform .1s,background .1s;-webkit-tap-highlight-color:transparent;
-      touch-action:none;line-height:1.15;
-    }
-    .sk-btn small{display:block;font-size:.62rem;font-weight:700;opacity:.7;letter-spacing:.04em}
-    .sk-btn:active,.sk-btn.held{background:rgba(255,140,40,.22);border-color:rgba(255,160,60,.55);transform:scale(.93)}
-    .sk-btn-trick{background:rgba(255,80,40,.22);border-color:rgba(255,120,60,.4)}
-    .sk-btn-trick:active,.sk-btn-trick.held{background:rgba(255,100,50,.4)}
-    .sk-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:12px;background:rgba(0,0,0,.86);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2;padding:16px}
     .sk-canvas-wrap{position:relative;width:100%;max-width:400px}
-    .sk-msg{font-size:1.45rem;font-weight:900;color:#ffb347;text-shadow:0 0 20px rgba(255,140,40,.6);text-align:center;letter-spacing:.04em}
-    .sk-sub{font-size:.78rem;color:rgba(255,255,255,.55);letter-spacing:.06em;text-align:center;max-width:280px;line-height:1.35}
+    .sk-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:12px;background:rgba(0,0,0,.86);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2;padding:14px;overflow-y:auto}
+    .sk-msg{font-size:1.35rem;font-weight:900;color:#ffb347;text-shadow:0 0 20px rgba(255,140,40,.6);text-align:center;letter-spacing:.04em}
+    .sk-sub{font-size:.72rem;color:rgba(255,255,255,.55);letter-spacing:.04em;text-align:center;max-width:300px;line-height:1.4}
+    .sk-help{
+      width:100%;max-width:320px;margin:2px 0 4px;padding:10px 12px;border-radius:10px;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,160,60,.25);
+      font-size:.68rem;color:rgba(255,255,255,.72);line-height:1.45;text-align:left;
+    }
+    .sk-help b{color:#ffb347}
+    .sk-help .sk-help-row{display:flex;gap:8px;margin:3px 0;align-items:flex-start}
+    .sk-help .sk-tag{
+      flex:0 0 auto;min-width:52px;padding:2px 6px;border-radius:6px;font-size:.62rem;font-weight:800;
+      background:rgba(255,140,40,.2);border:1px solid rgba(255,160,60,.4);color:#ffd089;text-align:center;
+    }
     .sk-start-btn{
       padding:12px 32px;border-radius:var(--radius-pill);
       background:linear-gradient(135deg,rgba(255,100,40,.9),rgba(255,180,40,.95));
       color:#1a0a00;border:1px solid rgba(255,160,60,.5);font-size:.9rem;font-weight:800;
       letter-spacing:.1em;cursor:pointer;box-shadow:0 0 22px rgba(255,120,40,.4);
     }
-    @media (max-height:700px){
-      #screen-sk .title{font-size:1.35rem !important;margin:8px 0 2px !important}
-      #screen-sk{padding-bottom:8px}
-      .sk-controls{margin-top:2px}
-      .sk-btn{padding:11px 4px;font-size:.85rem}
+    .sk-pad-row{
+      display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;
+      width:100%;max-width:400px;margin-top:4px;user-select:none;-webkit-user-select:none;
     }
+    .sk-stick-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+    .sk-stick-label{font-size:.58rem;font-weight:800;letter-spacing:.08em;color:rgba(255,255,255,.45);text-transform:uppercase}
+    .sk-stick{
+      position:relative;width:96px;height:96px;border-radius:50%;
+      background:rgba(20,10,8,.55);border:2px solid rgba(255,160,60,.35);
+      box-shadow:inset 0 0 18px rgba(0,0,0,.45),0 4px 14px rgba(0,0,0,.35);
+      touch-action:none;cursor:pointer;
+    }
+    .sk-stick-knob{
+      position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;
+      background:radial-gradient(circle at 35% 30%,#ffd089,#ff8c28 70%,#a04010);
+      border:2px solid rgba(255,220,160,.55);box-shadow:0 2px 10px rgba(0,0,0,.5);
+      pointer-events:none;transition:box-shadow .1s;
+    }
+    .sk-stick.active .sk-stick-knob{box-shadow:0 0 14px rgba(255,160,40,.7)}
+    .sk-face{
+      display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;padding:0 4px;
+    }
+    .sk-face-btn{
+      width:64px;height:64px;border-radius:50%;font-weight:900;font-size:1.05rem;line-height:1.05;
+      color:#1a0a00;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent;
+      border:2px solid rgba(255,220,160,.45);
+      box-shadow:0 4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.35);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    }
+    .sk-face-btn small{font-size:.52rem;font-weight:800;letter-spacing:.04em;opacity:.85}
+    .sk-face-a{background:linear-gradient(145deg,#7dffb3,#2ecc71)}
+    .sk-face-b{background:linear-gradient(145deg,#ffb347,#ff6b35)}
+    .sk-face-btn:active,.sk-face-btn.held{transform:scale(.92);filter:brightness(1.1)}
+    .sk-hint-bar{
+      width:100%;max-width:400px;font-size:.62rem;color:rgba(255,255,255,.4);
+      text-align:center;letter-spacing:.03em;line-height:1.3;min-height:1.3em;
+    }
+    .sk-hint-bar strong{color:#ffb347;font-weight:800}
+    @media (max-height:700px){
+      #screen-sk .title{font-size:1.25rem !important;margin:6px 0 2px !important}
+      #screen-sk{padding-bottom:6px}
+      .sk-stick{width:84px;height:84px}
+      .sk-stick-knob{width:34px;height:34px;margin:-17px 0 0 -17px}
+      .sk-face-btn{width:56px;height:56px;font-size:.95rem}
+    }
+    @media (max-width:380px){
+      .sk-stick{width:78px;height:78px}
+      .sk-face-btn{width:52px;height:52px}
+    }
+
 
     /* ── Mute Button ── */
     #mute-btn{
@@ -663,7 +705,7 @@
 
     <!-- Mini Ramp Skate -->
     <div id="screen-sk" class="screen">
-      <h1 class="title" style="font-size:1.9rem;margin-bottom:4px">🛹 Skate</h1>
+      <h1 class="title" style="font-size:1.7rem;margin-bottom:2px">🛹 Saints Ramp</h1>
       <div class="sk-wrap">
         <div class="sk-hud">
           <div>SCORE <span id="sk-score">0</span></div>
@@ -675,35 +717,43 @@
           <canvas id="sk-canvas" width="400" height="340"></canvas>
           <div class="sk-overlay" id="sk-overlay">
             <div class="sk-msg" id="sk-msg">SAINTS RAMP</div>
-            <div class="sk-sub" id="sk-sub">Pump the transitions · Ollie the lip · Flip · Grab · Grind the coping</div>
+            <div class="sk-sub" id="sk-sub">Ride the real mini-ramp · Drop in · Ollie · Stick tricks</div>
+            <div class="sk-help" id="sk-help">
+              <div class="sk-help-row"><span class="sk-tag">LEAN</span><span>Left stick — balance &amp; steer on the ramp (pump into transitions)</span></div>
+              <div class="sk-help-row"><span class="sk-tag">TRICK</span><span>Right stick — spin / flip / grab while airborne after ollie</span></div>
+              <div class="sk-help-row"><span class="sk-tag">A</span><span><b>Drop in</b> from the coping</span></div>
+              <div class="sk-help-row"><span class="sk-tag">B</span><span><b>Ollie</b> — pop off the surface</span></div>
+            </div>
             <button class="sk-start-btn" id="sk-start-btn" onclick="skStart()">▶ START</button>
           </div>
         </div>
-        <div class="sk-controls">
-          <button class="sk-btn" id="sk-left"
-            ontouchstart="skHold('left',true);event.preventDefault()" ontouchend="skHold('left',false)"
-            onmousedown="skHold('left',true)" onmouseup="skHold('left',false)" onmouseleave="skHold('left',false)">◀<small>LEAN</small></button>
-          <button class="sk-btn" id="sk-pump"
-            ontouchstart="skHold('pump',true);event.preventDefault()" ontouchend="skHold('pump',false)"
-            onmousedown="skHold('pump',true)" onmouseup="skHold('pump',false)" onmouseleave="skHold('pump',false)">↑<small>PUMP / OLLIE</small></button>
-          <button class="sk-btn sk-btn-trick" id="sk-flip"
-            ontouchstart="skTrick('flip');event.preventDefault()" ontouchend="skHold('flip',false)"
-            onmousedown="skTrick('flip')" onmouseup="skHold('flip',false)">🔃<small>FLIP</small></button>
-          <button class="sk-btn" id="sk-right"
-            ontouchstart="skHold('right',true);event.preventDefault()" ontouchend="skHold('right',false)"
-            onmousedown="skHold('right',true)" onmouseup="skHold('right',false)" onmouseleave="skHold('right',false)">▶<small>LEAN</small></button>
-        </div>
-        <div class="sk-controls" style="grid-template-columns:1fr 1fr;max-width:280px">
-          <button class="sk-btn sk-btn-trick" id="sk-grab"
-            ontouchstart="skHold('grab',true);event.preventDefault()" ontouchend="skHold('grab',false)"
-            onmousedown="skHold('grab',true)" onmouseup="skHold('grab',false)" onmouseleave="skHold('grab',false)">✊<small>GRAB</small></button>
-          <button class="sk-btn sk-btn-trick" id="sk-grind"
-            ontouchstart="skHold('grind',true);event.preventDefault()" ontouchend="skHold('grind',false)"
-            onmousedown="skHold('grind',true)" onmouseup="skHold('grind',false)" onmouseleave="skHold('grind',false)">➖<small>GRIND</small></button>
+        <div class="sk-hint-bar" id="sk-hint">Press <strong>A</strong> on coping to drop in · <strong>B</strong> to ollie</div>
+        <div class="sk-pad-row">
+          <div class="sk-stick-wrap">
+            <div class="sk-stick" id="sk-lean" data-stick="lean" aria-label="Lean stick">
+              <div class="sk-stick-knob" id="sk-lean-knob"></div>
+            </div>
+            <div class="sk-stick-label">Lean</div>
+          </div>
+          <div class="sk-face">
+            <button type="button" class="sk-face-btn sk-face-a" id="sk-btn-a"
+              ontouchstart="skFace('a',true);event.preventDefault()" ontouchend="skFace('a',false)"
+              onmousedown="skFace('a',true)" onmouseup="skFace('a',false)" onmouseleave="skFace('a',false)">A<small>DROP IN</small></button>
+            <button type="button" class="sk-face-btn sk-face-b" id="sk-btn-b"
+              ontouchstart="skFace('b',true);event.preventDefault()" ontouchend="skFace('b',false)"
+              onmousedown="skFace('b',true)" onmouseup="skFace('b',false)" onmouseleave="skFace('b',false)">B<small>OLLIE</small></button>
+          </div>
+          <div class="sk-stick-wrap">
+            <div class="sk-stick" id="sk-trick" data-stick="trick" aria-label="Trick stick">
+              <div class="sk-stick-knob" id="sk-trick-knob"></div>
+            </div>
+            <div class="sk-stick-label">Trick (air)</div>
+          </div>
         </div>
       </div>
       <button class="back-btn" onclick="skQuit()">← Quit</button>
     </div>
+
 
     <div class="confetti-container" id="confetti-container"></div>
   </div>
@@ -2341,18 +2391,36 @@
 
 
     // ── MINI RAMP SKATE ──────────────────────────────────────────────────────
+    // Physics rides the photo's mini-ramp U (crop-aligned collider), not fake overlays.
     const SK_W=400, SK_H=340;
+    // Source crop of skate-ramp-bg.jpg sized so both copings + flat are on-canvas
+    const SK_BG={sx:40, sy:240, sw:1320, sh:540};
+    // Image-space quarter-pipe matching graffiti sunset silhouette
+    const SK_IMG={lipY:328, flatY:705, leftLipX:95, rightLipX:1305};
+
     let skCtx=null, skRAF=null, skRunning=false, skOver=false;
     let skScore=0, skLives=3, skCombo=1, skBest=0;
     try{ skBest=parseInt(localStorage.getItem('hm_skate_best')||'0',10)||0; }catch(e){}
-    let skKeys={left:false,right:false,pump:false,grab:false,grind:false,flip:false};
+
+    // Dual sticks + face buttons
+    let skLean={x:0,y:0};   // -1..1 balance / steer while rolling
+    let skTrickStick={x:0,y:0}; // air tricks
+    let skFaceBtn={a:false,b:false};
     let skImgs={bg:null,skater:null,board:null,ready:false,_loading:false};
-    let skPath=[]; // samples: {x,y,ang,s,dist}
+    let skPath=[]; // {x,y,ang,s,dist}
     let skPathLen=0;
     let skPlayer=null;
-    let skFx=[]; // floating trick labels
-    let skPumpCool=0, skTrickLock=0;
-    let skMsgTimer=0;
+    let skFx=[];
+    let skOllieCool=0, skTrickLock=0, skDropCool=0;
+    let skFlatMin=0.35, skFlatMax=0.65;
+    let skSticksBound=false;
+
+    function skImgToCanvas(ix, iy){
+      return {
+        x:(ix-SK_BG.sx)/SK_BG.sw*SK_W,
+        y:(iy-SK_BG.sy)/SK_BG.sh*SK_H
+      };
+    }
 
     function skLoadImages(){
       if(skImgs._loading) return;
@@ -2363,46 +2431,56 @@
         const img=new Image();
         img.onload=()=>{skImgs[k]=img; if(--left===0){skImgs.ready=true; if(!skRunning) skDrawIdle();}};
         img.onerror=()=>{console.warn('SK asset fail',names[k]); if(--left===0){skImgs.ready=true;}};
-        img.src=names[k];
+        img.src=names[k]+'?v=2';
       }
     }
 
     function skBuildPath(){
-      // U halfpipe in canvas space. Left lip → left trans → flat → right trans → right lip
+      // Build U in IMAGE space (circular quarters + flat), map each sample to canvas.
+      // This keeps the collider glued to the visible ramp silhouette after non-uniform crop scale.
       const samples=[];
-      const lipY=88, bottomY=292, cxL=118, cxR=282, r=bottomY-lipY; // r≈204 but clipped
-      // Use tighter radius that fits: left wall center, right wall center
-      const R=88;
-      const leftLipX=40, rightLipX=360;
-      const flatY=286;
-      const leftFlatX=leftLipX+R;  // where left quarter meets flat
-      const rightFlatX=rightLipX-R;
-      // Left lip down: angle from -PI/2 (up) sweeping to 0 (rightward at bottom)
-      // Point on left quarter: center (leftFlatX, lipY), angle from PI (left/up-ish) ...
-      // Left transition: center at (leftLipX+R, lipY), angle π → π/2 (from left lip down to flat)
+      const lipY=SK_IMG.lipY, flatY=SK_IMG.flatY;
+      const leftLipX=SK_IMG.leftLipX, rightLipX=SK_IMG.rightLipX;
+      const R=flatY-lipY;
       const leftC={x:leftLipX+R, y:lipY};
       const rightC={x:rightLipX-R, y:lipY};
-      const N=48;
-      // left transition: θ = π → π/2
+      const leftFlatX=leftLipX+R, rightFlatX=rightLipX-R;
+      const N=56;
+
+      // Left transition: θ = π → π/2 (lip → flat). Board angle = tangent.
       for(let i=0;i<=N;i++){
         const t=i/N;
         const th=Math.PI - t*(Math.PI/2);
-        samples.push({x:leftC.x + R*Math.cos(th), y:leftC.y + R*Math.sin(th), ang:th+Math.PI/2});
+        const ix=leftC.x + R*Math.cos(th);
+        const iy=leftC.y + R*Math.sin(th);
+        const p=skImgToCanvas(ix,iy);
+        // Derivative for angle in canvas space (elliptical after scale)
+        const th2=th - 0.002;
+        const p2=skImgToCanvas(leftC.x+R*Math.cos(th2), leftC.y+R*Math.sin(th2));
+        const ang=Math.atan2(p.y-p2.y, p.x-p2.x);
+        samples.push({x:p.x, y:p.y, ang});
       }
-      // flat
-      const flatN=40;
+      // Flat bottom
+      const flatN=36;
       for(let i=1;i<=flatN;i++){
         const t=i/flatN;
-        const x=leftFlatX + t*(rightFlatX-leftFlatX);
-        samples.push({x, y:flatY, ang:0});
+        const ix=leftFlatX + t*(rightFlatX-leftFlatX);
+        const p=skImgToCanvas(ix, flatY);
+        samples.push({x:p.x, y:p.y, ang:0});
       }
-      // right transition: θ = π/2 → 0
+      // Right transition: θ = π/2 → 0
       for(let i=1;i<=N;i++){
         const t=i/N;
         const th=Math.PI/2 - t*(Math.PI/2);
-        samples.push({x:rightC.x + R*Math.cos(th), y:rightC.y + R*Math.sin(th), ang:th-Math.PI/2});
+        const ix=rightC.x + R*Math.cos(th);
+        const iy=rightC.y + R*Math.sin(th);
+        const p=skImgToCanvas(ix,iy);
+        const th2=th - 0.002;
+        const p2=skImgToCanvas(rightC.x+R*Math.cos(th2), rightC.y+R*Math.sin(th2));
+        const ang=Math.atan2(p.y-p2.y, p.x-p2.x);
+        samples.push({x:p.x, y:p.y, ang});
       }
-      // cumulative distance + normalize s in [0,1]
+
       let dist=0;
       samples[0].dist=0;
       for(let i=1;i<samples.length;i++){
@@ -2419,7 +2497,6 @@
     function skPathAt(s){
       s=Math.max(0,Math.min(1,s));
       const target=s*skPathLen;
-      // binary-ish scan
       let lo=0, hi=skPath.length-1;
       while(lo<hi-1){
         const mid=(lo+hi)>>1;
@@ -2428,28 +2505,106 @@
       const a=skPath[lo], b=skPath[hi];
       const span=(b.dist-a.dist)||1;
       const t=(target-a.dist)/span;
-      let ang=a.ang + (b.ang-a.ang)*t;
-      // unwrap-ish not needed for our range
-      return {x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, ang, s};
+      return {x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, ang:a.ang+(b.ang-a.ang)*t, s};
     }
 
-    let skFlatMin=0.39, skFlatMax=0.61;
     function skComputeZones(){
       let lo=1, hi=0;
-      const midY = skPath.length ? skPath[Math.floor(skPath.length/2)].y : 286;
+      const midY = skPath.length ? skPath[Math.floor(skPath.length/2)].y : 290;
       for(const pt of skPath){
-        if(Math.abs(pt.y - midY) < 3){ lo=Math.min(lo,pt.s); hi=Math.max(hi,pt.s); }
+        if(Math.abs(pt.y - midY) < 4){ lo=Math.min(lo,pt.s); hi=Math.max(hi,pt.s); }
       }
       if(hi>lo){ skFlatMin=lo; skFlatMax=hi; }
     }
-    function skNearLip(s){
-      return s < 0.12 || s > 0.88;
+    function skNearLip(s){ return s < 0.10 || s > 0.90; }
+    function skOnFlat(s){ return s >= skFlatMin && s <= skFlatMax; }
+    function skOnTransition(s){ return !skOnFlat(s) && !skNearLip(s); }
+
+    function skDrawBg(c){
+      if(skImgs.bg){
+        const img=skImgs.bg;
+        c.drawImage(img, SK_BG.sx, SK_BG.sy, SK_BG.sw, SK_BG.sh, 0, 0, SK_W, SK_H);
+        // light vignette only — no fake ramp guide strokes
+        const g=c.createRadialGradient(SK_W/2, SK_H*0.55, 40, SK_W/2, SK_H*0.5, 280);
+        g.addColorStop(0,'rgba(0,0,0,0)');
+        g.addColorStop(1,'rgba(0,0,0,0.28)');
+        c.fillStyle=g;
+        c.fillRect(0,0,SK_W,SK_H);
+      } else {
+        c.fillStyle='#1a0a08'; c.fillRect(0,0,SK_W,SK_H);
+      }
     }
-    function skOnFlat(s){
-      return s >= skFlatMin && s <= skFlatMax;
+
+    function skBindSticks(){
+      if(skSticksBound) return;
+      skSticksBound=true;
+      ['sk-lean','sk-trick'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(!el) return;
+        const kind=el.dataset.stick;
+        const onStart=(e)=>{
+          e.preventDefault();
+          el.classList.add('active');
+          const pt=e.touches?e.touches[0]:e;
+          skStickMove(kind, el, pt.clientX, pt.clientY);
+          const move=(ev)=>{
+            const p=ev.touches?ev.touches[0]:ev;
+            skStickMove(kind, el, p.clientX, p.clientY);
+            ev.preventDefault();
+          };
+          const end=()=>{
+            skStickReset(kind, el);
+            window.removeEventListener('mousemove', move);
+            window.removeEventListener('mouseup', end);
+            window.removeEventListener('touchmove', move);
+            window.removeEventListener('touchend', end);
+            window.removeEventListener('touchcancel', end);
+          };
+          window.addEventListener('mousemove', move, {passive:false});
+          window.addEventListener('mouseup', end);
+          window.addEventListener('touchmove', move, {passive:false});
+          window.addEventListener('touchend', end);
+          window.addEventListener('touchcancel', end);
+        };
+        el.addEventListener('mousedown', onStart);
+        el.addEventListener('touchstart', onStart, {passive:false});
+      });
     }
-    function skOnTransition(s){
-      return (!skOnFlat(s) && !skNearLip(s)) || (s>=0.12 && s<skFlatMin) || (s>skFlatMax && s<=0.88);
+
+    function skStickMove(kind, el, cx, cy){
+      const r=el.getBoundingClientRect();
+      const ox=r.left+r.width/2, oy=r.top+r.height/2;
+      let dx=(cx-ox)/(r.width*0.42), dy=(cy-oy)/(r.height*0.42);
+      const mag=Math.hypot(dx,dy)||1;
+      if(mag>1){ dx/=mag; dy/=mag; }
+      const knob=document.getElementById(kind==='lean'?'sk-lean-knob':'sk-trick-knob');
+      if(knob){
+        const px=dx*(r.width*0.28), py=dy*(r.height*0.28);
+        knob.style.transform=`translate(${px}px,${py}px)`;
+      }
+      if(kind==='lean') skLean={x:dx,y:dy};
+      else skTrickStick={x:dx,y:dy};
+    }
+    function skStickReset(kind, el){
+      el.classList.remove('active');
+      const knob=document.getElementById(kind==='lean'?'sk-lean-knob':'sk-trick-knob');
+      if(knob) knob.style.transform='translate(0,0)';
+      if(kind==='lean') skLean={x:0,y:0};
+      else skTrickStick={x:0,y:0};
+    }
+
+    function skFace(btn, on){
+      skFaceBtn[btn]=!!on;
+      const el=document.getElementById(btn==='a'?'sk-btn-a':'sk-btn-b');
+      if(el) el.classList.toggle('held', !!on);
+      if(!skRunning||skOver||!skPlayer) return;
+      if(on && btn==='a') skTryDropIn();
+      if(on && btn==='b') skTryOllie();
+    }
+
+    function skSetHint(t){
+      const h=document.getElementById('sk-hint');
+      if(h) h.innerHTML=t;
     }
 
     function showSK(){
@@ -2459,45 +2614,35 @@
       skCtx=canvas.getContext('2d');
       skBuildPath();
       skLoadImages();
+      skBindSticks();
       skDrawIdle();
       const ol=document.getElementById('sk-overlay');
       if(ol) ol.style.display='flex';
       const msg=document.getElementById('sk-msg');
       const sub=document.getElementById('sk-sub');
       const btn=document.getElementById('sk-start-btn');
+      const help=document.getElementById('sk-help');
       if(msg) msg.textContent='SAINTS RAMP';
-      if(sub) sub.textContent='Pump the transitions · Ollie the lip · Flip · Grab · Grind the coping';
+      if(sub) sub.textContent='Ride the real mini-ramp · Drop in · Ollie · Stick tricks';
+      if(help) help.style.display='block';
       if(btn){ btn.style.display='block'; btn.textContent='▶ START'; }
       skUpdateHUD();
+      skSetHint('Press <strong>A</strong> on coping to drop in · <strong>B</strong> to ollie');
       try{ requestAnimationFrame(()=>skDrawIdle()); }catch(e){}
     }
 
     function skDrawIdle(){
       if(!skCtx) return;
       const c=skCtx;
-      if(skImgs.bg){
-        // cover crop
-        const img=skImgs.bg;
-        const scale=Math.max(SK_W/img.width, SK_H/img.height);
-        const dw=img.width*scale, dh=img.height*scale;
-        c.drawImage(img, (SK_W-dw)/2, (SK_H-dh)/2, dw, dh);
-        c.fillStyle='rgba(0,0,0,0.25)';
-        c.fillRect(0,0,SK_W,SK_H);
-      } else {
-        c.fillStyle='#1a0a08'; c.fillRect(0,0,SK_W,SK_H);
-      }
-      // faint path
-      if(skPath.length){
-        c.strokeStyle='rgba(255,180,80,0.25)';
-        c.lineWidth=3;
-        c.beginPath();
-        c.moveTo(skPath[0].x, skPath[0].y);
-        for(let i=1;i<skPath.length;i++) c.lineTo(skPath[i].x, skPath[i].y);
-        c.stroke();
-      }
-      // preview skater at bottom
-      const p=skPathAt(0.5);
-      skDrawRider(c, p.x, p.y-2, 0, 1, 0, false);
+      skDrawBg(c);
+      // Preview rider on left coping (drop-in stance)
+      const p=skPathAt(0.02);
+      skDrawRider(c, p.x, p.y, p.ang, 1, 0, false);
+      // subtle coping glitter only (not a guide curve)
+      c.fillStyle='rgba(255,220,120,0.55)';
+      const L=skPathAt(0.01), R=skPathAt(0.99);
+      c.beginPath(); c.arc(L.x, L.y-3, 2.5, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.arc(R.x, R.y-3, 2.5, 0, Math.PI*2); c.fill();
     }
 
     function skStart(){
@@ -2507,19 +2652,23 @@
       if(!skPath.length) skBuildPath();
       document.getElementById('sk-overlay').style.display='none';
       skScore=0; skLives=3; skCombo=1; skOver=false; skFx=[];
-      skPumpCool=0; skTrickLock=0;
+      skOllieCool=0; skTrickLock=0; skDropCool=0;
+      skLean={x:0,y:0}; skTrickStick={x:0,y:0}; skFaceBtn={a:false,b:false};
+      // Start parked on left coping waiting for Drop In
       skPlayer={
-        s:0.5, v:1.8, // path param + signed speed (positive → right)
+        s:0.02, v:0,
         air:false, x:0, y:0, vx:0, vy:0, rot:0, spin:0,
         facing:1,
         trick:null, trickT:0, grind:false, grindSide:0,
-        pumped:false, ollied:false, grabbed:false, flipped:false,
+        waitingDrop:true,
+        ollied:false, grabbed:false, flipped:false, spun:false,
         boardAngle:0, bail:false, bailT:0,
-        lastS:0.5
+        lastS:0.02, pumpTimer:0
       };
       const p=skPathAt(skPlayer.s);
-      skPlayer.x=p.x; skPlayer.y=p.y; skPlayer.boardAngle=p.ang;
+      skPlayer.x=p.x; skPlayer.y=p.y; skPlayer.boardAngle=p.ang; skPlayer.rot=p.ang;
       skUpdateHUD();
+      skSetHint('Tap <strong>A / DROP IN</strong> to drop from the coping');
       if(skRAF) cancelAnimationFrame(skRAF);
       skRunning=true;
       skLoop();
@@ -2535,7 +2684,7 @@
     function skAddScore(base, label){
       const pts=Math.round(base*skCombo);
       skScore+=pts;
-      skCombo=Math.min(8, skCombo+0.5);
+      skCombo=Math.min(8, +(skCombo+0.5).toFixed(1));
       skFx.push({x:skPlayer.x, y:skPlayer.y-40, text:(label||'')+' +'+pts, life:1});
       if(skScore>skBest){
         skBest=skScore;
@@ -2544,265 +2693,269 @@
       skUpdateHUD();
     }
 
-    function skBreakCombo(){
-      skCombo=1;
-      skUpdateHUD();
-    }
+    function skBreakCombo(){ skCombo=1; skUpdateHUD(); }
 
     function skFloat(text, color){
+      if(!skPlayer) return;
       skFx.push({x:skPlayer.x, y:skPlayer.y-50, text, life:1.1, color:color||'#ffb347'});
+    }
+
+    function skTryDropIn(){
+      const p=skPlayer;
+      if(!p||p.bail||p.air||skDropCool>0) return;
+      if(p.waitingDrop || skNearLip(p.s)){
+        // Drop from coping into the pipe
+        const side = p.s < 0.5 ? 1 : -1; // from left lip go rightward
+        p.waitingDrop=false;
+        p.s = p.s < 0.5 ? 0.04 : 0.96;
+        p.v = side * 3.4;
+        p.facing = side;
+        skDropCool=20;
+        skAddScore(60, 'DROP IN');
+        skFloat('DROP IN', '#7dffb3');
+        skSetHint('Lean stick to pump · <strong>B</strong> to ollie at the lip');
+      }
+    }
+
+    function skTryOllie(){
+      const p=skPlayer;
+      if(!p||p.bail||p.waitingDrop||skOllieCool>0) return;
+      if(p.air){
+        // already air — treat as nollie boost / late ollie pop
+        if(p.vy>-1){ p.vy-=1.2; skOllieCool=18; }
+        return;
+      }
+      if(p.grind){
+        p.grind=false;
+        p.air=true; p.ollied=true;
+        const side=p.grindSide||1;
+        p.vy=-4.8; p.vx=side*1.1;
+        skAddScore(80,'OLLIE OUT');
+        skOllieCool=16;
+        return;
+      }
+      skLaunch(true);
+      skOllieCool=14;
     }
 
     function skUpdate(){
       const p=skPlayer;
       if(!p) return;
+      if(skOllieCool>0) skOllieCool--;
+      if(skTrickLock>0) skTrickLock--;
+      if(skDropCool>0) skDropCool--;
+
       if(p.bail){
         p.bailT+=1/60;
         p.vy+=0.28;
         p.x+=p.vx; p.y+=p.vy;
         p.rot+=p.spin;
-        if(p.bailT>1.2){
+        if(p.bailT>1.15){
           skLives--;
           skUpdateHUD();
           skBreakCombo();
           if(skLives<=0){ skGameOver(); return; }
-          // reset to flat
           p.bail=false; p.bailT=0; p.air=false; p.grind=false;
-          p.s=0.5; p.v=0; p.spin=0; p.rot=0; p.trick=null;
-          p.ollied=false; p.flipped=false; p.grabbed=false; p.pumped=false;
+          p.waitingDrop=true; p.s=0.02; p.v=0; p.spin=0; p.rot=0; p.trick=null;
+          p.ollied=false; p.flipped=false; p.grabbed=false; p.spun=false;
           const q=skPathAt(p.s);
-          p.x=q.x; p.y=q.y; p.boardAngle=q.ang;
+          p.x=q.x; p.y=q.y; p.boardAngle=q.ang; p.rot=q.ang;
           skFloat('BAIL…', '#ff6b6b');
+          skSetHint('Tap <strong>A / DROP IN</strong> to drop from the coping');
         }
-        // fx decay
         skFx=skFx.filter(f=>{f.life-=0.02; f.y-=0.6; return f.life>0;});
         return;
       }
 
-      if(skPumpCool>0) skPumpCool--;
-      if(skTrickLock>0) skTrickLock--;
+      // Waiting on coping
+      if(p.waitingDrop){
+        const q=skPathAt(p.s);
+        p.x=q.x; p.y=q.y; p.boardAngle=q.ang; p.rot=q.ang;
+        // lean stick can choose which coping
+        if(skLean.x > 0.55){ p.s=0.98; p.facing=-1; }
+        if(skLean.x < -0.55){ p.s=0.02; p.facing=1; }
+        skFx=skFx.filter(f=>{f.life-=0.02; f.y-=0.6; return f.life>0;});
+        return;
+      }
 
       if(p.grind){
-        // grind along coping
-        const side=p.grindSide; // -1 left, +1 right
-        const targetS=side<0 ? 0.02 : 0.98;
-        p.s += (side*0.0015 + Math.sign(p.v||side)*0.0022);
-        // keep near lip
-        if(side<0) p.s=Math.max(0.005, Math.min(0.06, p.s));
-        else p.s=Math.max(0.94, Math.min(0.995, p.s));
+        const side=p.grindSide;
+        if(side<0) p.s=Math.max(0.005, Math.min(0.07, p.s + skLean.x*0.002));
+        else p.s=Math.max(0.93, Math.min(0.995, p.s + skLean.x*0.002));
         const q=skPathAt(p.s);
-        p.x=q.x; p.y=q.y-6; p.boardAngle=side<0 ? -0.15 : 0.15;
-        p.rot=p.boardAngle;
-        // trickle score without exploding combo
+        p.x=q.x; p.y=q.y-5; p.boardAngle=side<0?-0.12:0.12; p.rot=p.boardAngle;
         skScore += 2;
         if(skScore>skBest){ skBest=skScore; try{localStorage.setItem('hm_skate_best',String(skBest));}catch(e){} }
-        if(skScore%60===0){ skFloat('GRIND', '#ffe066'); skUpdateHUD(); }
+        if(skScore%50===0){ skFloat('GRIND','#ffe066'); skUpdateHUD(); }
         else if(skScore%10===0) skUpdateHUD();
-        // drop off grind
-        if(!skKeys.grind || Math.random()<0.002){
-          // exit to air or drop in
+        // hold lean down / away to drop back in; ollie already handled
+        if(Math.abs(skLean.y)>0.7 || Math.random()<0.0015){
           p.grind=false;
-          if(skKeys.pump){
-            p.air=true; p.vy=-4.5; p.vx=side*1.2; p.ollied=true;
-            skAddScore(80, 'OLLIE OUT');
-          } else {
-            // drop in
-            p.air=false;
-            p.v = side * 2.8;
-            p.s = side<0 ? 0.05 : 0.95;
-          }
+          p.v = side * 2.6;
+          p.s = side<0 ? 0.06 : 0.94;
         }
-        // lean extends grind / steers
-        if(skKeys.left) p.s-=0.001;
-        if(skKeys.right) p.s+=0.001;
         skFx=skFx.filter(f=>{f.life-=0.02; f.y-=0.6; return f.life>0;});
         return;
       }
 
       if(!p.air){
-        // grounded on ramp
-        // gravity along slope: a = g * sin(slope)
-        const q=skPathAt(p.s);
-        const slope=q.ang; // approx board angle
-        // Positive v moves toward increasing s (right)
-        // Conserved energy on ramp: E ≈ v²/2 + g*heightAboveFlat
-        const bottomY=286, G=0.09;
+        // Grounded on REAL ramp path
+        const bottomY=skPathAt(0.5).y;
+        const G=0.085;
         const hhNow=Math.max(0, bottomY - skPathAt(p.s).y);
         let E = 0.5*p.v*p.v + G*hhNow;
 
-        if(skKeys.left){ E += 0.18; if(Math.abs(p.v)<0.35) p.facing=-1; }
-        if(skKeys.right){ E += 0.18; if(Math.abs(p.v)<0.35) p.facing=1; }
+        // Lean stick steers + pumps
+        if(Math.abs(skLean.x)>0.2){
+          E += 0.12 * Math.abs(skLean.x);
+          if(Math.abs(p.v)<0.4) p.facing = skLean.x>0 ? 1 : -1;
+        }
+        // Pump: push stick into the bowl (down) on transitions, or toward travel
+        if(skOnTransition(p.s) && skLean.y > 0.35){
+          E += 0.55 * skLean.y;
+          if(p.pumpTimer<=0){ skFloat('PUMP','#7dffb3'); p.pumpTimer=18; }
+        }
+        if(p.pumpTimer>0) p.pumpTimer--;
 
-        if(skKeys.pump && skPumpCool<=0){
-          let add=0;
-          if(skOnTransition(p.s)) add=20;
-          else if(skOnFlat(p.s)) add=11;
-          else add=13;
-          E += add;
-          skPumpCool = skOnTransition(p.s) ? 8 : 14;
-          p.pumped=true;
-          skFloat('PUMP', '#7dffb3');
-          if(skNearLip(p.s) && E > 22){
-            const spd=Math.sqrt(Math.max(0, 2*(E - G*hhNow)));
-            p.v = (p.v>=0 || skKeys.right ? 1 : -1) * Math.max(2.2, spd);
-            if(skKeys.left) p.v=-Math.abs(p.v);
-            skLaunch();
-            skPumpCool=16;
-          }
+        // Face lean along slope adds energy when matching travel
+        if(skLean.x * p.v > 0 && Math.abs(skLean.x)>0.35){
+          E += 0.22 * Math.abs(skLean.x);
         }
 
-        E *= 0.9992;
-        E = Math.min(80, E);
+        E *= 0.999;
+        E = Math.min(90, E);
 
         {
           const hh=Math.max(0, bottomY - skPathAt(p.s).y);
           const kinetic=Math.max(0, E - G*hh);
           let spd=Math.sqrt(2*kinetic);
           let sign=Math.sign(p.v);
-          if(Math.abs(p.v)<0.3){
-            if(skKeys.right) sign=1;
-            else if(skKeys.left) sign=-1;
+          if(Math.abs(p.v)<0.25){
+            if(Math.abs(skLean.x)>0.25) sign=Math.sign(skLean.x);
             else sign=p.facing||1;
           }
           if(!sign) sign=1;
-          p.v = sign * Math.min(10, spd);
+          p.v = sign * Math.min(11, spd);
         }
 
-        if(skNearLip(p.s) && E>24 && Math.abs(p.v)>2.2){
-          skLaunch();
+        // Auto-launch over lip only with serious speed (ollie preferred)
+        if(skNearLip(p.s) && E>38 && Math.abs(p.v)>4.5){
+          skLaunch(false);
         }
 
         p.s += (p.v / skPathLen);
         p.facing = p.v>=0 ? 1 : -1;
 
-        // Hit lip without enough speed → reverse
         if(p.s<=0){
           p.s=0.001;
-          if(Math.abs(p.v)<2.4){ p.v = Math.max(1.2, Math.abs(p.v)*0.85); }
-          else { skLaunch(); }
+          if(Math.abs(p.v)<2.8){ p.v = Math.max(1.1, Math.abs(p.v)*0.8); }
+          else { skLaunch(false); }
         }
         if(p.s>=1){
           p.s=0.999;
-          if(Math.abs(p.v)<2.4){ p.v = -Math.max(1.2, Math.abs(p.v)*0.85); }
-          else { skLaunch(); }
+          if(Math.abs(p.v)<2.8){ p.v = -Math.max(1.1, Math.abs(p.v)*0.8); }
+          else { skLaunch(false); }
         }
 
-        // Try start grind at coping
-        if(skKeys.grind && skNearLip(p.s) && Math.abs(p.v)>0.7){
+        // Hold lean up near lip to lock a grind
+        if(skNearLip(p.s) && skLean.y < -0.65 && Math.abs(p.v)>0.6){
           p.grind=true;
           p.grindSide = p.s<0.5 ? -1 : 1;
-          p.v *= 0.3;
-          skAddScore(120, 'CROOKED GRIND');
+          p.v *= 0.25;
+          skAddScore(120, 'LIP GRIND');
         }
 
         const qq=skPathAt(p.s);
         p.x=qq.x; p.y=qq.y; p.boardAngle=qq.ang; p.rot=qq.ang;
         p.lastS=p.s;
 
-        // Reset air tricks when rolling flats
         if(skOnFlat(p.s)){
-          p.ollied=false; p.flipped=false; p.grabbed=false;
+          p.ollied=false; p.flipped=false; p.grabbed=false; p.spun=false;
         }
       } else {
-        // airborne
-        p.vy += 0.22; // gravity
+        // Airborne — gravity + trick stick
+        p.vy += 0.22;
         p.x += p.vx;
         p.y += p.vy;
-        // rotate with lean
-        if(skKeys.left) p.spin -= 0.004;
-        if(skKeys.right) p.spin += 0.004;
-        p.spin *= 0.98;
+
+        // Trick stick steers spin / flip / grab
+        const tx=skTrickStick.x, ty=skTrickStick.y;
+        const tmag=Math.hypot(tx,ty);
+        if(tmag>0.25){
+          // horizontal = spin
+          p.spin += tx * 0.012;
+          // vertical up = grab
+          if(ty < -0.55 && !p.grabbed){
+            p.grabbed=true; p.trick='grab'; p.trickT=28;
+            skAddScore(100, ty<-0.85?'MELON':'INDY');
+          }
+          // vertical down / diagonal = flip
+          if((ty > 0.55 || (Math.abs(tx)>0.55 && Math.abs(ty)>0.2)) && !p.flipped && skTrickLock<=0){
+            skDoFlip(tx<0);
+          }
+        }
+        // Lean stick also gently steers air rotation
+        p.spin += skLean.x * 0.0035;
+        p.spin *= 0.985;
         p.rot += p.spin;
         p.boardAngle = p.rot;
 
-        // Grab
-        if(skKeys.grab && !p.grabbed && p.trick!=='flip'){
-          p.grabbed=true;
-          p.trick='grab';
-          p.trickT=25;
-          skAddScore(100, 'INDY GRAB');
-        }
-
-        // Flip (kickflip / heelflip by lean)
-        if((skKeys.flip || false) && !p.flipped && skTrickLock<=0){
-          skDoFlip();
-        }
-
-        // Landing detection: near path and falling
         if(p.vy>0){
           const hit=skFindLanding(p.x, p.y);
-          if(hit && hit.dist<14){
+          if(hit && hit.dist<16){
             skLand(hit);
           }
         }
-
-        // Fell off world
-        if(p.y>SK_H+40 || p.x<-60 || p.x>SK_W+60){
+        if(p.y>SK_H+50 || p.x<-70 || p.x>SK_W+70){
           skDoBail('OUT OF BOUNDS');
         }
       }
 
       if(p.trickT>0) p.trickT--;
-      else if(p.trick==='flip' && p.air) { /* keep spinning until land */ }
       else if(!p.air) p.trick=null;
 
       skFx=skFx.filter(f=>{f.life-=0.02; f.y-=0.6; return f.life>0;});
     }
 
-    function skLaunch(){
+    function skLaunch(fromOllie){
       const p=skPlayer;
-      if(p.air||p.bail||p.grind) return;
+      if(!p||p.air||p.bail||p.grind||p.waitingDrop) return;
       const q=skPathAt(p.s);
       p.air=true;
-      p.ollied=true;
-      // Launch velocity from path speed + upward
-      const speed=p.v * 0.55;
-      // tangent from angle
+      p.ollied=!!fromOllie;
+      const speed=p.v * 0.5;
       const tangX=Math.cos(q.ang), tangY=Math.sin(q.ang);
-      // outward normal (up away from ramp)
-      // For U ramp, normal points inward-up roughly -perpendicular
       let nx=-Math.sin(q.ang), ny=Math.cos(q.ang);
-      // ensure normal points "up" (negative y in canvas = up... wait canvas y down)
-      // We want launch away from concrete = toward sky = decreasing y
       if(ny>0){ nx=-nx; ny=-ny; }
-      const boost=3.2 + Math.min(4.2, Math.abs(p.v)*0.42);
-      p.vx = tangX*speed + nx*boost*0.2;
+      const boost=(fromOllie?3.6:2.6) + Math.min(4.0, Math.abs(p.v)*0.38);
+      p.vx = tangX*speed + nx*boost*0.18;
       p.vy = tangY*speed + ny*boost;
-      if(p.vy > -2.2) p.vy = -2.8 - Math.abs(p.v)*0.18;
-      p.spin = p.v * 0.01;
-      p.x=q.x; p.y=q.y-4;
-      skAddScore(50, 'OLLIE');
+      if(p.vy > -2.0) p.vy = -2.6 - Math.abs(p.v)*0.16;
+      p.spin = p.v * 0.008;
+      p.x=q.x; p.y=q.y-5;
+      if(fromOllie) skAddScore(50, 'OLLIE');
+      else skAddScore(30, 'AIR');
       p.v=0;
+      skSetHint('Trick stick: ←→ spin · ↑ grab · ↓ flip');
     }
 
-    function skDoFlip(){
+    function skDoFlip(heel){
       const p=skPlayer;
       if(!p.air || p.flipped) return;
       p.flipped=true;
       p.trick='flip';
       p.trickT=40;
-      skTrickLock=20;
-      const heel = skKeys.left || (!skKeys.right && p.facing<0);
+      skTrickLock=22;
       if(heel){
-        p.spin -= 0.22;
+        p.spin -= 0.24;
         skAddScore(150, 'HEELFLIP');
       } else {
-        p.spin += 0.22;
+        p.spin += 0.24;
         skAddScore(150, 'KICKFLIP');
       }
     }
 
-    function skTrick(kind){
-      if(!skRunning||skOver||!skPlayer) return;
-      if(kind==='flip'){
-        skKeys.flip=true;
-        if(skPlayer.air) skDoFlip();
-        setTimeout(()=>{skKeys.flip=false;},120);
-      }
-    }
-
     function skFindLanding(x,y){
-      // nearest path point
       let best=null, bestD=1e9;
       for(let i=0;i<skPath.length;i+=2){
         const pt=skPath[i];
@@ -2814,34 +2967,29 @@
 
     function skLand(hit){
       const p=skPlayer;
-      // Board angle vs surface — bail if too tilted
       let diff=p.rot - hit.ang;
       while(diff>Math.PI) diff-=Math.PI*2;
       while(diff<-Math.PI) diff+=Math.PI*2;
-      const upside = Math.abs(diff) > 1.15; // ~66deg
-      // Still flipping mid-trick poorly
-      const midFlip = p.trick==='flip' && p.trickT>8;
+      const upside = Math.abs(diff) > 1.2;
+      const midFlip = p.trick==='flip' && p.trickT>10;
       if(upside || midFlip){
         skDoBail(midFlip?'LANDING PRIMO':'WHEELBITE');
         return;
       }
-      // Successful land
       p.air=false;
       p.s=hit.s;
       p.x=hit.x; p.y=hit.y;
       p.boardAngle=hit.ang;
       p.rot=hit.ang;
       p.spin=0;
-      // Convert air vx into path speed
-      p.v = (p.facing||1) * Math.max(1.2, Math.min(6, Math.hypot(p.vx,p.vy)*0.55));
-      // Direction from approach
+      p.v = (p.facing||1) * Math.max(1.1, Math.min(6.5, Math.hypot(p.vx,p.vy)*0.55));
       if(p.vx < -0.4) p.v = -Math.abs(p.v);
       if(p.vx > 0.4) p.v = Math.abs(p.v);
       p.vx=0; p.vy=0;
       p.trick=null; p.trickT=0;
       skAddScore(40, 'LAND');
-      // Grind catch on coping land
-      if(skKeys.grind && skNearLip(hit.s)){
+      skSetHint('Lean to pump · <strong>B</strong> ollie · lean ↑ at lip to grind');
+      if(skLean.y < -0.65 && skNearLip(hit.s)){
         p.grind=true;
         p.grindSide = hit.s<0.5 ? -1 : 1;
         skAddScore(100, 'LIP GRIND');
@@ -2851,7 +2999,7 @@
     function skDoBail(reason){
       const p=skPlayer;
       if(p.bail) return;
-      p.bail=true; p.bailT=0; p.air=true; p.grind=false;
+      p.bail=true; p.bailT=0; p.air=true; p.grind=false; p.waitingDrop=false;
       p.vy=1.5; p.vx=(Math.random()-0.5)*2; p.spin=(Math.random()-0.5)*0.3;
       skBreakCombo();
       skFloat(reason||'BAIL', '#ff6b6b');
@@ -2862,21 +3010,18 @@
       c.save();
       c.translate(x, y);
       c.rotate(ang + (spinExtra||0));
-      // board under feet
-      const bw=54, bh=10;
+      const bw=52, bh=10;
       if(skImgs.board){
-        c.drawImage(skImgs.board, -bw/2, -2, bw, bh);
+        c.drawImage(skImgs.board, -bw/2, -1, bw, bh);
       } else {
         c.fillStyle='#222'; c.fillRect(-bw/2,0,bw,6);
-        c.fillStyle='#a55eea'; c.beginPath(); c.arc(-bw/2+8,8,4,0,Math.PI*2); c.fill();
+        c.fillStyle='#a55eea';
+        c.beginPath(); c.arc(-bw/2+8,8,4,0,Math.PI*2); c.fill();
         c.beginPath(); c.arc(bw/2-8,8,4,0,Math.PI*2); c.fill();
       }
-      // skater upright-ish relative to board (slight crouch)
-      const sh=56, sw=22;
+      const sh=58, sw=24;
       c.scale(facing<0?-1:1, 1);
-      if(grabbing){
-        c.rotate(-0.25);
-      }
+      if(grabbing) c.rotate(-0.22);
       if(skImgs.skater){
         c.drawImage(skImgs.skater, -sw/2, -sh+2, sw, sh);
       } else {
@@ -2891,40 +3036,26 @@
       if(!skCtx||!skPlayer) return;
       const c=skCtx;
       const p=skPlayer;
-      // background
-      if(skImgs.bg){
-        const img=skImgs.bg;
-        const scale=Math.max(SK_W/img.width, SK_H/img.height);
-        const dw=img.width*scale, dh=img.height*scale;
-        c.drawImage(img, (SK_W-dw)/2, (SK_H-dh)/2 - 10, dw, dh);
-        // vignette for readability
-        c.fillStyle='rgba(0,0,0,0.18)';
-        c.fillRect(0,0,SK_W,SK_H);
-      } else {
-        c.fillStyle='#1a0a08'; c.fillRect(0,0,SK_W,SK_H);
-      }
+      skDrawBg(c);
 
-      // soft ramp guide
-      if(skPath.length){
-        c.strokeStyle='rgba(255,200,100,0.18)';
-        c.lineWidth=6; c.lineCap='round';
-        c.beginPath();
-        c.moveTo(skPath[0].x, skPath[0].y);
-        for(let i=1;i<skPath.length;i++) c.lineTo(skPath[i].x, skPath[i].y);
-        c.stroke();
-        // coping dots
-        const L=skPathAt(0.02), R=skPathAt(0.98);
+      // NO fake guide curve — rider sits on photo ramp surface only.
+      // Tiny coping dots for drop-in affordance
+      if(p.waitingDrop){
         c.fillStyle='rgba(255,220,120,0.7)';
-        c.beginPath(); c.arc(L.x,L.y-4,3,0,Math.PI*2); c.fill();
-        c.beginPath(); c.arc(R.x,R.y-4,3,0,Math.PI*2); c.fill();
+        const L=skPathAt(0.01), R=skPathAt(0.99);
+        c.beginPath(); c.arc(L.x,L.y-3,3,0,Math.PI*2); c.fill();
+        c.beginPath(); c.arc(R.x,R.y-3,3,0,Math.PI*2); c.fill();
+        c.fillStyle='rgba(255,255,255,0.55)';
+        c.font='700 10px system-ui,sans-serif';
+        c.textAlign='center';
+        c.fillText('DROP IN (A)', p.x, p.y-62);
+        c.textAlign='left';
       }
 
-      // rider
-      const grabVis = p.grabbed && p.air && skKeys.grab;
-      const flipSpin = (p.trick==='flip') ? p.spin*0.5 : 0;
+      const grabVis = p.grabbed && p.air && (skTrickStick.y < -0.3 || p.trick==='grab');
+      const flipSpin = (p.trick==='flip') ? p.spin*0.45 : 0;
       skDrawRider(c, p.x, p.y - (p.grind?2:0), p.boardAngle, p.facing, flipSpin, grabVis);
 
-      // grind sparks
       if(p.grind){
         c.fillStyle='#ffe066';
         for(let i=0;i<5;i++){
@@ -2932,7 +3063,6 @@
         }
       }
 
-      // speed bar
       const spd=Math.min(1, Math.abs(p.air?Math.hypot(p.vx,p.vy):p.v)/7.5);
       c.fillStyle='rgba(0,0,0,0.45)';
       c.fillRect(12, SK_H-18, 100, 8);
@@ -2942,7 +3072,6 @@
       c.font='700 9px system-ui,sans-serif';
       c.fillText('SPEED', 12, SK_H-22);
 
-      // fx text
       c.textAlign='center';
       for(const f of skFx){
         c.globalAlpha=Math.max(0,f.life);
@@ -2965,6 +3094,8 @@
       const ol=document.getElementById('sk-overlay');
       document.getElementById('sk-msg').textContent='SESSION OVER';
       document.getElementById('sk-sub').textContent='Score: '+skScore+' · Best: '+skBest;
+      const help=document.getElementById('sk-help');
+      if(help) help.style.display='none';
       const btn=document.getElementById('sk-start-btn');
       btn.textContent='▶ SKATE AGAIN'; btn.style.display='block';
       ol.style.display='flex';
@@ -2973,20 +3104,8 @@
     function skQuit(){
       skRunning=false;
       if(skRAF){cancelAnimationFrame(skRAF);skRAF=null;}
-      skKeys={left:false,right:false,pump:false,grab:false,grind:false,flip:false};
+      skLean={x:0,y:0}; skTrickStick={x:0,y:0}; skFaceBtn={a:false,b:false};
       showMain();
-    }
-
-    function skHold(dir, on){
-      skKeys[dir]=!!on;
-      const el=document.getElementById('sk-'+dir);
-      if(el) el.classList.toggle('held', !!on);
-      if(on && dir==='pump' && skRunning && skPlayer && !skPlayer.air && !skPlayer.bail){
-        // handled in update via skKeys.pump
-      }
-      if(on && dir==='grind' && skRunning && skPlayer && skNearLip(skPlayer.s) && !skPlayer.air && !skPlayer.grind){
-        // attempt immediate grind lock in update
-      }
     }
 
     function skUpdateHUD(){
@@ -3003,27 +3122,36 @@
     document.addEventListener('keydown',e=>{
       const onSk=document.getElementById('screen-sk')?.classList.contains('active');
       if(!onSk) return;
-      if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){ skHold('left',true); e.preventDefault(); }
-      if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){ skHold('right',true); e.preventDefault(); }
-      if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'||e.key===' '){
-        e.preventDefault();
-        const ol=document.getElementById('sk-overlay');
-        const olOpen=ol && ol.style.display!=='none';
-        if(olOpen && !skRunning) skStart();
-        else skHold('pump',true);
-      }
-      if(e.key==='f'||e.key==='F'||e.key==='ArrowDown'||e.key==='s'||e.key==='S'){ e.preventDefault(); skTrick('flip'); }
-      if(e.key==='g'||e.key==='G'){ skHold('grab',true); e.preventDefault(); }
-      if(e.key==='c'||e.key==='C'||e.key==='Shift'){ skHold('grind',true); e.preventDefault(); }
+      const ol=document.getElementById('sk-overlay');
+      const olOpen=ol && ol.style.display!=='none';
+      if((e.key==='Enter'||e.key===' ') && olOpen && !skRunning){ e.preventDefault(); skStart(); return; }
+      // Lean stick via WASD / arrows
+      if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){ skLean.x=-1; e.preventDefault(); }
+      if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){ skLean.x=1; e.preventDefault(); }
+      if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'){ skLean.y=-1; e.preventDefault(); }
+      if(e.key==='ArrowDown'||e.key==='s'||e.key==='S'){ skLean.y=1; e.preventDefault(); }
+      // Trick stick via IJKL
+      if(e.key==='j'||e.key==='J'){ skTrickStick.x=-1; e.preventDefault(); }
+      if(e.key==='l'||e.key==='L'){ skTrickStick.x=1; e.preventDefault(); }
+      if(e.key==='i'||e.key==='I'){ skTrickStick.y=-1; e.preventDefault(); }
+      if(e.key==='k'||e.key==='K'){ skTrickStick.y=1; e.preventDefault(); }
+      // Face buttons
+      if(e.key==='z'||e.key==='Z'||e.key==='e'||e.key==='E'){ e.preventDefault(); skFace('a',true); }
+      if(e.key==='x'||e.key==='X'||e.key===' '||e.key==='c'||e.key==='C'){ e.preventDefault(); skFace('b',true); }
     });
     document.addEventListener('keyup',e=>{
-      if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') skHold('left',false);
-      if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') skHold('right',false);
-      if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'||e.key===' ') skHold('pump',false);
-      if(e.key==='g'||e.key==='G') skHold('grab',false);
-      if(e.key==='c'||e.key==='C'||e.key==='Shift') skHold('grind',false);
-      if(e.key==='f'||e.key==='F'||e.key==='ArrowDown'||e.key==='s'||e.key==='S') skKeys.flip=false;
+      if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){ if(skLean.x<0) skLean.x=0; }
+      if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){ if(skLean.x>0) skLean.x=0; }
+      if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'){ if(skLean.y<0) skLean.y=0; }
+      if(e.key==='ArrowDown'||e.key==='s'||e.key==='S'){ if(skLean.y>0) skLean.y=0; }
+      if(e.key==='j'||e.key==='J'){ if(skTrickStick.x<0) skTrickStick.x=0; }
+      if(e.key==='l'||e.key==='L'){ if(skTrickStick.x>0) skTrickStick.x=0; }
+      if(e.key==='i'||e.key==='I'){ if(skTrickStick.y<0) skTrickStick.y=0; }
+      if(e.key==='k'||e.key==='K'){ if(skTrickStick.y>0) skTrickStick.y=0; }
+      if(e.key==='z'||e.key==='Z'||e.key==='e'||e.key==='E') skFace('a',false);
+      if(e.key==='x'||e.key==='X'||e.key===' '||e.key==='c'||e.key==='C') skFace('b',false);
     });
+
 
 
     function showToast(msg){
