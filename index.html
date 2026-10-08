@@ -296,6 +296,12 @@
       box-shadow:var(--glow-gold),inset 0 1px 0 rgba(255,255,255,.25);
     }
     .btn-gold:hover{filter:brightness(1.1)}
+    .btn-neon{
+      background:linear-gradient(135deg,rgba(220,20,180,.85),rgba(0,200,240,.88));
+      color:#fff;border-color:rgba(255,43,214,.45);
+      box-shadow:0 0 20px rgba(255,43,214,.35),inset 0 1px 0 rgba(255,255,255,.2);
+    }
+    .btn-neon:hover{filter:brightness(1.1)}
 
     /* ── Breakout ── */
     #screen-bo{background:transparent}
@@ -361,6 +367,7 @@
       <button class="btn btn-orange" onclick="showTTT()">⭕ Tic Tac Toe</button>
       <button class="btn btn-blue" onclick="showSI()">👾 Space Invaders</button>
       <button class="btn btn-gold" onclick="showBO()">🛹 Breakout</button>
+      <button class="btn btn-neon" onclick="location.href='neondrop.html'">🟪 Neon Drop</button>
     </div>
 
     <div id="screen-cats" class="screen">
@@ -2272,6 +2279,10 @@
         if(!room && (g==='invaders'||g==='si'||g==='spaceinvaders')){
           showSI();
           history.replaceState({},'',location.pathname);
+          return;
+        }
+        if(!room && (g==='neondrop'||g==='neon'||g==='drop')){
+          location.replace('neondrop.html');
           return;
         }
         if(!room) return;
